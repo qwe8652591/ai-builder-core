@@ -1,5 +1,4 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
@@ -18,24 +17,19 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@ai-builder/dsl": ["../../packages/dsl/src/index.ts"],
-      "@ai-builder/dsl/*": ["../../packages/dsl/src/*"],
       "@ai-builder/std-ui": ["../../packages/std-ui/src/index.ts"],
+      "@ai-builder/std-ui/*": ["../../packages/std-ui/src/*"],
       "@ai-builder/jsx-runtime": ["../../packages/jsx-runtime/src/index.ts"],
       "@ai-builder/jsx-runtime/*": ["../../packages/jsx-runtime/src/*"],
-      "@ai-builder/runtime-renderer/*": ["../../packages/runtime-renderer/dist/*/index.d.ts"]
+      "@ai-builder/dsl-runtime": ["../../packages/dsl-runtime/src/index.ts"]
     }
   },
   "include": [
     "src",
-    "vite.config.ts"
+    "dsl.config.ts"
   ],
   "exclude": [
     "node_modules",
     "dist"
   ]
 }
-
-
-
-

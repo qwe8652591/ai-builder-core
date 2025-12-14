@@ -11,9 +11,5 @@
     "forceConsistentCasingInFileNames": true
   },
   "exclude": ["node_modules", "dist"],
-  "references": [
-    { "path": "./packages/dsl" },
-    { "path": "./packages/runtime" }
-  ],
   "files": []
 }

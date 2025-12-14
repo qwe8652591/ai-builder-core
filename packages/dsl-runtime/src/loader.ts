@@ -12,6 +12,9 @@ import fs from 'fs';
 import { createServer, type ViteDevServer } from 'vite';
 
 export interface DSLProjectConfig {
+  /** 项目名称（用于数据库持久化 key 等） */
+  name?: string;
+  
   /** 项目根目录（运行时自动设置） */
   root: string;
   

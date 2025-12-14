@@ -550,9 +550,9 @@ export default definePage({
                 placeholder="搜索元数据..."
                 style={{ width: 200 }}
               />
-              <Button size="small" onClick={expandAll} title="展开全部">⬇</Button>
-              <Button size="small" onClick={collapseAll} title="折叠全部">⬆</Button>
-              <Button size="small" onClick={loadMetadata} title="刷新">🔄</Button>
+              <Button size="small" onClick={expandAll}>⬇</Button>
+              <Button size="small" onClick={collapseAll}>⬆</Button>
+              <Button size="small" onClick={loadMetadata}>🔄</Button>
             </div>
             
             {/* 树形列表 */}

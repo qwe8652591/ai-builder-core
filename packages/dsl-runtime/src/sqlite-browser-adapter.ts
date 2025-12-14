@@ -683,7 +683,13 @@ export class SQLiteBrowserAdapter implements IORMAdapter {
     }
     
     // 先获取受影响的行数
-    const countResult = await this.executeCount({ ...spec, entityClass: spec.entityClass });
+    const countResult = await this.executeCount({
+      ...spec,
+      entityClass: spec.entityClass,
+      include: [],
+      select: [],
+      orderBy: [],
+    });
     
     this.db.run(sql, params);
     await this.autoSave();
@@ -815,7 +821,7 @@ export class SQLiteBrowserAdapter implements IORMAdapter {
    */
   exportAsBlob(): Blob {
     const data = this.export();
-    return new Blob([data], { type: 'application/x-sqlite3' });
+    return new Blob([data as BlobPart], { type: 'application/x-sqlite3' });
   }
   
   /**

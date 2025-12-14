@@ -190,7 +190,7 @@ export function checkFieldPermission(permission: string | undefined, userPermiss
 export function filterHiddenFields<T extends Record<string, { hidden?: boolean }>>(fields: T): Partial<T> {
   const result: Partial<T> = {};
   for (const [key, value] of Object.entries(fields)) {
-    if (!value.hidden) result[key as keyof T] = value;
+    if (!value.hidden) result[key as keyof T] = value as T[keyof T];
   }
   return result;
 }
@@ -206,7 +206,7 @@ export function groupFieldsByGroup<T extends Record<string, { group?: string }>>
   for (const [key, value] of Object.entries(fields)) {
     const group = value.group ?? 'default';
     if (!groups.has(group)) groups.set(group, []);
-    groups.get(group)!.push([key as keyof T, value]);
+    groups.get(group)!.push([key as keyof T, value as T[keyof T]]);
   }
   return groups;
 }
