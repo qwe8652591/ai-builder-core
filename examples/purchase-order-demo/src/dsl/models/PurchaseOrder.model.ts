@@ -110,17 +110,29 @@ export class PurchaseOrderItem {
  * ✅ 类定义自动注册到 Metadata Store
  * ✅ 类本身就是 TypeScript 类型
  */
-@Entity({ table: 'purchase_orders', comment: '采购订单' })
+@Entity({ 
+  table: 'purchase_orders', 
+  comment: '采购订单',
+  // 🎯 使用元数据扩展的属性
+  audit: true,           // 启用审计
+  softDelete: true,      // 软删除
+  versioned: true,       // 乐观锁
+})
 export class PurchaseOrder {
   @PrimaryKey()
-  @Column({ type: FieldTypes.STRING, label: '订单ID' })
+  @Column({ type: FieldTypes.STRING, label: '订单ID', hidden: true })
   id!: string;
 
   @Column({ 
     type: FieldTypes.STRING, 
     label: '订单编号', 
     required: true,
-    validation: { pattern: /^PO\d{8}$/, message: '订单编号格式错误' }
+    validation: { pattern: /^PO\d{8}$/, message: '订单编号格式错误' },
+    // 🎯 使用元数据扩展的属性
+    sortable: true,
+    searchable: true,
+    width: 150,
+    order: 1,
   })
   orderNo!: string;
 
@@ -128,7 +140,11 @@ export class PurchaseOrder {
     type: FieldTypes.STRING, 
     label: '订单标题', 
     required: true,
-    validation: { minLength: 1, maxLength: 200, message: '标题不能超过200字符' }
+    validation: { minLength: 1, maxLength: 200, message: '标题不能超过200字符' },
+    // 🎯 使用元数据扩展的属性
+    searchable: true,
+    placeholder: '请输入订单标题',
+    order: 2,
   })
   title!: string;
 
@@ -138,7 +154,18 @@ export class PurchaseOrder {
   @OneToMany(() => PurchaseOrderItem, [CascadeTypes.INSERT, CascadeTypes.UPDATE, CascadeTypes.REMOVE])
   items!: PurchaseOrderItem[];
 
-  @Column({ type: FieldTypes.NUMBER, label: '订单总额', required: true })
+  @Column({ 
+    type: FieldTypes.NUMBER, 
+    label: '订单总额', 
+    required: true,
+    // 🎯 使用元数据扩展的属性
+    displayFormat: 'currency',
+    sortable: true,
+    align: 'right',
+    width: 120,
+    permission: 'finance:view',  // 只有财务人员可见
+    order: 5,
+  })
   totalAmount!: number;
 
   @Column({ type: FieldTypes.STRING, label: '订单状态' })

@@ -56,6 +56,9 @@ export const Routes = {
     { pattern: '/orders/:id' }  // 路由模式，用于配置
   ),
   
+  // 系统管理模块
+  MetadataExplorer: '/system/metadata',
+  
   // 后续可扩展其他模块
   // ProductList: '/products',
   // ProductDetail: Object.assign(
@@ -107,6 +110,19 @@ export const routes: RouteConfig[] = [
     title: '订单详情',
     permission: 'purchase:order:view',
     menu: { hidden: true },
+  },
+  
+  // 系统管理模块
+  {
+    path: Routes.MetadataExplorer,
+    element: () => import('./pages/MetadataExplorer.page'),
+    title: '元数据浏览器',
+    permission: 'system:metadata:view',
+    menu: {
+      icon: 'DatabaseOutlined',
+      order: 100,
+      parent: 'SystemManagement',
+    },
   },
   
   // 示例：嵌套路由（后续可扩展）

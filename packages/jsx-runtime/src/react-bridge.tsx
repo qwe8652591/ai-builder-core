@@ -224,12 +224,12 @@ export function vnodeToReactElement(vnode: VNodeChild): React.ReactNode {
         return createReactElement(componentMapping[funcName], props, key);
       }
       
-      // 检查是否是 DSL 组件（有 meta 属性）
-      if ('meta' in type && 'setup' in type) {
-        // DSL 组件：调用 setup 并递归转换结果
+      // 检查是否是 DSL 组件（有 meta 属性和 render 方法）
+      if ('meta' in type && 'render' in type && typeof (type as any).render === 'function') {
+        // DSL 组件：调用 render 方法获取 VNode
         try {
           const componentDef = type as any;
-          const result = componentDef.setup(props);
+          const result = componentDef.render(props);
           return vnodeToReactElement(result);
         } catch (e) {
           console.error('[ReactBridge] Error rendering DSL component:', e);

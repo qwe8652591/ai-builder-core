@@ -2,6 +2,7 @@
  * DSL 自动加载入口
  * 
  * 只需要导入这个文件，所有 DSL 定义就会自动注册：
+ * - App → 应用配置（布局、主题等）
  * - Model/Domain/DTO/Service → Metadata Store
  * - Page → Page Registry（用于路由匹配）
  * - Component → Component Registry
@@ -9,18 +10,29 @@
  * 无需手动列出每个定义！
  */
 
+// ==================== 应用配置 ====================
+// 🎯 定义应用级别的配置和可扩展组件（.tsx 支持 JSX）
+import './app.tsx';
+
 // ==================== 领域层 (Domain Layer) ====================
 // Model - 实体、值对象、枚举
 // 🎯 导入即自动注册到 Metadata Store，类本身就是 TypeScript 类型
 import './models/PurchaseOrder.model';
+import './models/Supplier.model';
+import './models/Material.model';
 
 // Domain - 领域规则
 import './domain/PurchaseOrder.domain';
+
+// ==================== 扩展层 (Extensions) ====================
+// 🎯 使用 Module Augmentation 扩展已有对象的方法
+import './extensions';
 
 // Service - 内部服务
 import './services/PurchaseOrder.service';
 
 // ==================== 基础设施层 (Infrastructure Layer) ====================
+
 // Repository - 数据访问
 import './repositories/PurchaseOrder.repository';
 

@@ -1,47 +1,18 @@
 {
   "name": "purchase-order-demo",
   "version": "1.0.0",
+  "description": "采购订单管理系统 - 纯 DSL 项目",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "vite --config vite.config.react.ts",
-    "build": "tsc && vite build --config vite.config.react.ts",
-    "preview": "vite preview",
-    "gen:schema": "tsx scripts/generate-kysely-schemas-by-model.ts",
-    "watch:schema": "tsx scripts/watch-and-generate.ts",
-    "check:schema": "tsx scripts/check-schema-sync.ts",
-    "show:metadata": "tsx scripts/demo-metadata-api.ts"
-  },
-  "dependencies": {
-    "@ai-builder/dsl": "workspace:*",
-    "@ai-builder/jsx-runtime": "workspace:*",
-    "@ai-builder/runtime": "workspace:*",
-    "@ai-builder/runtime-renderer": "workspace:*",
-    "@ai-builder/std-ui": "workspace:*",
-    "@faker-js/faker": "^10.1.0",
-    "antd": "^5.12.0",
-    "decimal.js": "^10.4.3",
-    "dexie": "^4.2.1",
-    "kysely": "^0.27.0",
-    "pg": "^8.11.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.20.0",
-    "reflect-metadata": "^0.2.2",
-    "sql.js": "^1.13.0"
+    "dev": "dsl-runtime dev",
+    "inspect": "dsl-runtime inspect"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.3",
-    "@types/node": "^20.10.0",
-    "@types/pg": "^8.10.0",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
-    "@vitejs/plugin-react": "^5.1.2",
-    "chokidar": "^3.5.3",
-    "glob": "^10.3.0",
-    "ts-morph": "^27.0.2",
-    "tsx": "^4.7.0",
-    "typescript": "^5.3.0",
-    "unplugin-swc": "^1.5.9",
-    "vite": "^5.0.0"
+    "@ai-builder/dsl": "workspace:*",
+    "@ai-builder/jsx-runtime": "workspace:*",
+    "@ai-builder/std-ui": "workspace:*",
+    "@ai-builder/dsl-runtime": "workspace:*",
+    "typescript": "^5.3.0"
   }
 }

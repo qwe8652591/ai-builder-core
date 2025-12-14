@@ -60,7 +60,7 @@ export class PurchaseOrderService {
   }): Promise<{ data: PurchaseOrderListItemDTO[]; total: number }> {
     const result = await PurchaseOrderRepository.findList(params);
     
-    // 转换为 DTO
+    // 转换为 DTO，使用扩展方法生成派生字段
     const data: PurchaseOrderListItemDTO[] = result.data.map(order => ({
       id: order.id,
       orderNo: order.orderNo,
@@ -70,9 +70,10 @@ export class PurchaseOrderService {
       createdBy: order.createdBy ?? '',
       createdAt: order.createdAt ?? new Date(),
       supplierName: order.supplier.name,
-      statusLabel: PurchaseOrderStatus.getLabel(order.status ?? '') ?? order.status ?? '',
+      // 使用扩展方法
+      statusLabel: order.getStatusLabel?.() ?? (PurchaseOrderStatus.getLabel(order.status ?? '') ?? order.status ?? ''),
+      formattedTotal: order.getFormattedTotal?.() ?? `¥${(order.totalAmount ?? 0).toFixed(2)}`,
     }));
-    
     return { data, total: result.total };
   }
   
@@ -84,29 +85,40 @@ export class PurchaseOrderService {
     const order = await PurchaseOrderRepository.findById(orderId);
     if (!order) return null;
     
-    // 转换为 DTO
+    // 转换为 DTO，使用扩展方法生成派生字段
     return {
       id: order.id,
       orderNo: order.orderNo,
       title: order.title,
       supplier: order.supplier,
+      // 明细项：使用扩展方法生成格式化字段
       items: order.items.map(item => ({
         ...item,
-        amount: item.quantity * item.unitPrice,
+        amount: item.calculateAmount?.() ?? (item.quantity * item.unitPrice),
+        formattedAmount: item.getFormattedAmount?.() ?? `¥${((item.quantity ?? 0) * (item.unitPrice ?? 0)).toFixed(2)}`,
+        formattedUnitPrice: item.getFormattedUnitPrice?.() ?? `¥${(item.unitPrice ?? 0).toFixed(2)}`,
+        fullDescription: item.getFullDescription?.() ?? (item.materialName ?? item.materialCode),
       })),
       totalAmount: order.totalAmount,
       status: order.status,
-      statusLabel: PurchaseOrderStatus.getLabel(order.status ?? '') ?? order.status ?? '',
+      // 使用扩展方法生成显示字段
+      statusLabel: order.getStatusLabel?.() ?? (PurchaseOrderStatus.getLabel(order.status ?? '') ?? order.status ?? ''),
+      formattedTotal: order.getFormattedTotal?.() ?? `¥${(order.totalAmount ?? 0).toFixed(2)}`,
+      // 供应商扩展信息
+      supplierContactInfo: order.supplier.getContactInfo?.() ?? 
+        ([order.supplier.contactPerson, order.supplier.contactPhone].filter(Boolean).join(' / ') || '暂无联系信息'),
+      supplierShortDesc: order.supplier.getShortDescription?.() ?? 
+        `${order.supplier.name} (${order.supplier.code})`,
       createdBy: order.createdBy,
       createdAt: order.createdAt,
       remark: order.remark,
-      // 计算操作权限
-      canEdit: order.status === 'DRAFT',
-      canSubmit: order.status === 'DRAFT',
-      canApprove: order.status === 'PENDING',
-      canReject: order.status === 'PENDING',
-      canCancel: ['DRAFT', 'PENDING'].includes(order.status ?? ''),
-      canDelete: order.status === 'DRAFT',
+      // 使用扩展方法判断权限
+      canEdit: order.isEditable?.() ?? (order.status === 'DRAFT'),
+      canSubmit: order.isEditable?.() ?? (order.status === 'DRAFT'),
+      canApprove: order.isApprovable?.() ?? (order.status === 'PENDING'),
+      canReject: order.isApprovable?.() ?? (order.status === 'PENDING'),
+      canCancel: order.isCancellable?.() ?? ['DRAFT', 'PENDING'].includes(order.status ?? ''),
+      canDelete: order.isEditable?.() ?? (order.status === 'DRAFT'),
       canStartExecution: order.status === 'APPROVED',
       canComplete: order.status === 'IN_PROGRESS',
     };

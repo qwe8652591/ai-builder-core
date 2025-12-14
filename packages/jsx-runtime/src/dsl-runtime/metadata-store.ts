@@ -22,10 +22,11 @@ export type DSLType =
   | 'service'
   | 'appService'
   | 'page'
-  | 'component';
+  | 'component'
+  | 'extension';  // 🆕 扩展类型
 
 /** DSL 层级（DDD 分层） */
-export type DSLLayer = 'domain' | 'application' | 'presentation';
+export type DSLLayer = 'domain' | 'application' | 'presentation' | 'infrastructure';
 
 /** DSL 子层级 */
 export type DSLSubLayer = 
@@ -36,7 +37,8 @@ export type DSLSubLayer =
   | 'dto'        // 数据传输对象
   | 'appService' // 应用服务
   | 'view'       // 视图/页面
-  | 'component'; // 自定义组件
+  | 'component'  // 自定义组件
+  | 'extension'; // 🆕 扩展
 
 /** 元数据基础接口 */
 export interface BaseDSLMetadata {
@@ -69,6 +71,10 @@ export interface LayeredMetadata {
     view: Map<string, BaseDSLMetadata>;
     component: Map<string, BaseDSLMetadata>;
   };
+  // 🆕 基础设施层（扩展）
+  infrastructure: {
+    extension: Map<string, BaseDSLMetadata>;
+  };
 }
 
 // ==================== Metadata Store 实现 ====================
@@ -90,7 +96,7 @@ class DSLMetadataStore {
     const types: DSLType[] = [
       'entity', 'valueObject', 'enum', 'dto', 'constant',
       'rule', 'domainLogic', 'repository', 'service', 'appService', 
-      'page', 'component'
+      'page', 'component', 'extension'  // 🆕 添加 extension
     ];
     types.forEach(type => this.byType.set(type, new Map()));
   }
@@ -196,6 +202,10 @@ class DSLMetadataStore {
         view: this.getByType('page'),
         component: this.getByType('component'),
       },
+      // 🆕 基础设施层
+      infrastructure: {
+        extension: this.getByType('extension'),
+      },
     };
   }
   
@@ -249,6 +259,7 @@ class DSLMetadataStore {
     domain: { model: number; domain: number; repository: number; service: number };
     application: { dto: number; appService: number };
     presentation: { view: number; component: number };
+    infrastructure: { extension: number };  // 🆕
     total: number;
   } {
     const layered = this.getLayered();
@@ -266,6 +277,10 @@ class DSLMetadataStore {
       presentation: {
         view: layered.presentation.view.size,
         component: layered.presentation.component.size,
+      },
+      // 🆕 基础设施层
+      infrastructure: {
+        extension: layered.infrastructure.extension.size,
       },
       total: this.byName.size,
     };
@@ -285,6 +300,172 @@ export const metadataStore = new DSLMetadataStore();
  */
 export function registerMetadata(definition: unknown): void {
   metadataStore.register(definition);
+}
+
+/**
+ * 扩展定义接口
+ */
+export interface ExtensionDefinition {
+  /** 扩展名称 */
+  name: string;
+  /** 扩展描述 */
+  description?: string;
+  /** 扩展目标（被扩展的类或接口名） */
+  target: string;
+  /** 扩展类型：method（方法扩展）或 property（属性扩展） */
+  type: 'method' | 'property' | 'metadata';
+  /** 扩展的方法/属性列表 */
+  members: Array<{
+    name: string;
+    description?: string;
+    returnType?: string;
+  }>;
+}
+
+/**
+ * 注册扩展定义到 store（仅注册元数据）
+ * 
+ * @example
+ * ```typescript
+ * registerExtension({
+ *   name: 'PurchaseOrderExtension',
+ *   description: '采购订单扩展方法',
+ *   target: 'PurchaseOrder',
+ *   type: 'method',
+ *   members: [
+ *     { name: 'getStatusLabel', description: '获取状态标签', returnType: 'string' },
+ *     { name: 'isEditable', description: '检查是否可编辑', returnType: 'boolean' },
+ *   ],
+ * });
+ * ```
+ */
+export function registerExtension(extension: ExtensionDefinition): void {
+  metadataStore.register({
+    name: extension.name,
+    __type: 'extension' as const,
+    comment: extension.description,
+    description: extension.description,
+    target: extension.target,
+    extensionType: extension.type,
+    members: extension.members,
+  });
+}
+
+/**
+ * 方法扩展配置
+ */
+export interface MethodExtensionConfig<T, R = any> {
+  /** 方法描述 */
+  description?: string;
+  /** 返回类型描述 */
+  returnType?: string;
+  /** 方法实现 */
+  implementation: (this: T, ...args: any[]) => R;
+}
+
+/**
+ * 提取接口中的方法名（排除非函数属性）
+ */
+type ExtractMethodKeys<T> = {
+  [K in keyof T]: T[K] extends ((...args: any[]) => any) | undefined ? K : never;
+}[keyof T];
+
+/**
+ * 定义扩展配置（带类型安全）
+ * 
+ * @typeParam T - 目标类（构造函数）
+ * @typeParam M - 扩展方法接口（用于类型检查，确保方法名正确）
+ */
+export interface DefineExtensionConfig<
+  T extends abstract new (...args: any) => any,
+  M = unknown
+> {
+  /** 扩展名称 */
+  name: string;
+  /** 扩展描述 */
+  description?: string;
+  /** 目标类 */
+  target: T;
+  /** 
+   * 方法定义
+   * 当提供 M 泛型时，键必须是 M 中定义的方法名
+   */
+  methods: unknown extends M 
+    ? Record<string, MethodExtensionConfig<InstanceType<T>>>  // M 未指定时，允许任意键
+    : { [K in ExtractMethodKeys<M>]?: MethodExtensionConfig<InstanceType<T>> };  // M 指定时，键必须匹配
+}
+
+/**
+ * 定义扩展（同时挂载方法到 prototype 并注册到 metadata）
+ * 
+ * 🎯 统一 API：一次调用完成运行时扩展 + metadata 注册
+ * 
+ * @typeParam T - 目标类
+ * @typeParam M - 扩展方法接口（用于类型检查）
+ * 
+ * @example
+ * ```typescript
+ * // 1. 先定义扩展接口（用于 declare module）
+ * interface SupplierExtensionMethods {
+ *   isActive?(): boolean;
+ *   getContactInfo?(): string;
+ * }
+ * 
+ * // 2. 使用 declare module 扩展类型（IDE 支持）
+ * declare module './models/Supplier.model' {
+ *   interface Supplier extends SupplierExtensionMethods {}
+ * }
+ * 
+ * // 3. 使用 defineExtension 定义扩展（带类型安全检查）
+ * // ✅ 传入 SupplierExtensionMethods 作为第二个泛型参数
+ * // ✅ methods 的键会被检查，必须是接口中定义的方法名
+ * defineExtension<typeof Supplier, SupplierExtensionMethods>({
+ *   name: 'SupplierExtension',
+ *   target: Supplier,
+ *   methods: {
+ *     isActive: {  // ✅ 正确
+ *       implementation(this: Supplier) { return this.status === 'ACTIVE'; },
+ *     },
+ *     isActve: {   // ❌ 类型错误：拼写错误会被检测到
+ *       implementation(this: Supplier) { return true; },
+ *     },
+ *   },
+ * });
+ * ```
+ */
+export function defineExtension<
+  T extends abstract new (...args: any) => any,
+  M = unknown
+>(
+  config: DefineExtensionConfig<T, M>
+): void {
+  const { name, description, target, methods } = config;
+  
+  // 1. 挂载方法到 prototype
+  const members: ExtensionDefinition['members'] = [];
+  
+  for (const [methodName, methodConfig] of Object.entries(methods)) {
+    // 挂载到 prototype
+    (target.prototype as any)[methodName] = methodConfig.implementation;
+    
+    // 收集 member 信息
+    members.push({
+      name: methodName,
+      description: methodConfig.description,
+      returnType: methodConfig.returnType,
+    });
+  }
+  
+  // 2. 注册到 metadata store
+  registerExtension({
+    name,
+    description,
+    target: target.name,
+    type: 'method',
+    members,
+  });
+  
+  console.log(`[Extension] ${name} 已定义并注册（${members.length} 个方法）`);
 }
 
 /**
@@ -352,6 +533,7 @@ export const typeToLayer: Record<DSLType, DSLLayer> = {
   appService: 'application',
   page: 'presentation',
   component: 'presentation',
+  extension: 'infrastructure',  // 🆕
 };
 
 /** DSL 类型到子层级的映射 */
@@ -368,6 +550,7 @@ export const typeToSubLayer: Record<DSLType, DSLSubLayer> = {
   appService: 'appService',
   page: 'view',
   component: 'component',
+  extension: 'extension',  // 🆕
 };
 
 /** DSL 类型的中文标签 */
@@ -384,6 +567,7 @@ export const typeLabels: Record<DSLType, string> = {
   appService: 'AppService',
   page: 'Page',
   component: 'Component',
+  extension: '扩展',  // 🆕
 };
 
 /** DSL 类型的图标 */
@@ -400,5 +584,6 @@ export const typeIcons: Record<DSLType, string> = {
   appService: '📱',
   page: '📄',
   component: '🧩',
+  extension: '🔌',  // 🆕
 };
 

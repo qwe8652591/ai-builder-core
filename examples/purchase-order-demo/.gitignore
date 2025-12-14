@@ -1,0 +1,11 @@
+# DSL Runtime 生成的临时文件
+.dsl-runtime-entry.tsx
+
+# Node modules
+node_modules/
+
+# 构建输出
+dist/
+
+# Vite 缓存
+.vite/

@@ -9,6 +9,9 @@
 import './OrderList.page';    // /orders - 订单列表
 import './OrderDetail.page';  // /orders/:id - 订单详情
 
+// ==================== 系统管理模块 ====================
+import './MetadataExplorer.page';  // /system/metadata - 元数据浏览器
+
 // ==================== 其他模块（示例） ====================
 // import './Dashboard.page';     // / - 首页
 // import './ProductList.page';   // /products - 产品列表

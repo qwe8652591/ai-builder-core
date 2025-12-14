@@ -36,12 +36,25 @@ export class SupplierInfoDTO extends SupplierInfoModel {}
  * 订单明细项 DTO（View 层可用）
  * 
  * 🎯 派生自 PurchaseOrderItem Model
+ *    扩展字段通过扩展方法生成
  */
 @DTO({ comment: '订单明细项' })
 export class PurchaseOrderItemDTO extends PurchaseOrderItemModel {
   /** 计算字段：金额 = 数量 × 单价 */
   @Field({ type: FieldTypes.NUMBER, label: '金额' })
   amount?: number;
+
+  /** 格式化金额（使用扩展方法 getFormattedAmount） */
+  @Field({ type: FieldTypes.STRING, label: '格式化金额' })
+  formattedAmount?: string;
+
+  /** 格式化单价（使用扩展方法 getFormattedUnitPrice） */
+  @Field({ type: FieldTypes.STRING, label: '格式化单价' })
+  formattedUnitPrice?: string;
+
+  /** 完整物料描述（使用扩展方法 getFullDescription） */
+  @Field({ type: FieldTypes.STRING, label: '物料描述' })
+  fullDescription?: string;
 }
 
 // ==================== 基础 DTO ====================
@@ -109,11 +122,11 @@ export class GetPurchaseOrderListDTO implements Partial<Pick<PurchaseOrder, 'sta
   @Field({ type: FieldTypes.STRING, label: '订单编号' })
   orderNo?: string;
 
-  @Field({ type: FieldTypes.STRING, label: '供应商名称' })
-  supplierName?: string;
-
   @Field({ type: FieldTypes.STRING, label: '创建人' })
   createdBy?: string;
+
+  @Field({ type: FieldTypes.STRING, label: '供应商名称' })
+  supplierName?: string;
 
   @Field({ type: FieldTypes.DATE, label: '开始日期' })
   startDate?: Date;
@@ -181,42 +194,19 @@ export class PurchaseOrderStatisticsDTO {
 /**
  * 供应商选项 DTO
  * 
- * 🎯 继承 SupplierInfo 的部分字段
+ * 🎯 继承 SupplierInfo，通过 extends 自动复用字段元数据
  */
 @DTO({ comment: '供应商选项' })
-export class SupplierOptionDTO implements Pick<SupplierInfoModel, 'code' | 'name' | 'contactPerson' | 'contactPhone'> {
-  @Field({ type: FieldTypes.STRING, label: '供应商编码', required: true })
-  code!: string;
-
-  @Field({ type: FieldTypes.STRING, label: '供应商名称', required: true })
-  name!: string;
-
-  @Field({ type: FieldTypes.STRING, label: '联系人' })
-  contactPerson?: string;
-
-  @Field({ type: FieldTypes.STRING, label: '联系电话' })
-  contactPhone?: string;
-}
+export class SupplierOptionDTO extends SupplierInfoModel {}
 
 /**
  * 物料选项 DTO
  * 
- * 🎯 继承 PurchaseOrderItem 的部分字段
+ * 🎯 继承 PurchaseOrderItem，通过 extends 自动复用字段元数据
+ *    扩展 latestPrice 字段
  */
 @DTO({ comment: '物料选项' })
-export class MaterialOptionDTO implements Pick<PurchaseOrderItemModel, 'materialCode' | 'materialName' | 'unit'> {
-  @Field({ type: FieldTypes.STRING, label: '物料编码', required: true })
-  materialCode!: string;
-
-  @Field({ type: FieldTypes.STRING, label: '物料名称', required: true })
-  materialName?: string;
-
-  @Field({ type: FieldTypes.STRING, label: '规格型号' })
-  specification?: string;
-
-  @Field({ type: FieldTypes.STRING, label: '单位', required: true })
-  unit?: string;
-
+export class MaterialOptionDTO extends PurchaseOrderItemModel {
   @Field({ type: FieldTypes.NUMBER, label: '最新价格' })
   latestPrice?: number;
 }
@@ -275,45 +265,31 @@ export class UpdatePurchaseOrderDTO extends SimplePurchaseOrderDTO
 /**
  * 订单列表项 DTO
  * 
- * 🎯 继承 PurchaseOrder 的部分字段，扩展显示字段
+ * 🎯 列表项只需要部分字段，不继承复杂的 supplier/items
+ *    扩展字段通过扩展方法生成
  */
 @DTO({ comment: '订单列表项' })
 export class PurchaseOrderListItemDTO implements 
-  Pick<PurchaseOrder, 'id' | 'orderNo' | 'title' | 'totalAmount' | 'status' | 'createdBy' | 'createdAt' | 'approvedBy' | 'approvedAt'> {
+  Pick<PurchaseOrder, 'id' | 'orderNo' | 'title' | 'totalAmount' | 'status' | 'createdBy' | 'createdAt'> {
   
-  @Field({ type: FieldTypes.STRING, label: '订单ID', required: true })
+  // 基础字段（从 PurchaseOrder Pick）
   id!: string;
-
-  @Field({ type: FieldTypes.STRING, label: '订单编号', required: true })
   orderNo!: string;
-
-  @Field({ type: FieldTypes.STRING, label: '订单标题', required: true })
   title!: string;
-
-  @Field({ type: FieldTypes.NUMBER, label: '订单总额', required: true })
   totalAmount!: number;
-
-  @Field({ type: FieldTypes.STRING, label: '订单状态', required: true })
   status?: PurchaseOrderStatusType;
-
-  @Field({ type: FieldTypes.STRING, label: '创建人', required: true })
   createdBy!: string;
-
-  @Field({ type: FieldTypes.DATETIME, label: '创建时间', required: true })
   createdAt!: Date;
 
-  @Field({ type: FieldTypes.STRING, label: '审批人' })
-  approvedBy?: string;
-
-  @Field({ type: FieldTypes.DATETIME, label: '审批时间' })
-  approvedAt?: Date;
-
-  // 扩展字段
+  // 扩展字段（通过扩展方法生成）
   @Field({ type: FieldTypes.STRING, label: '供应商名称', required: true })
   supplierName!: string;
 
   @Field({ type: FieldTypes.STRING, label: '状态文本', required: true })
   statusLabel!: string;
+
+  @Field({ type: FieldTypes.STRING, label: '格式化总额', required: true })
+  formattedTotal!: string;
 }
 
 /**
@@ -323,11 +299,20 @@ export class PurchaseOrderListItemDTO implements
  */
 @DTO({ comment: '订单详情' })
 export class PurchaseOrderDetailDTO extends PurchaseOrder {
-  // 显示字段
+  // 显示字段（使用扩展方法生成）
   @Field({ type: FieldTypes.STRING, label: '状态文本', required: true })
   statusLabel!: string;
 
-  // 操作权限
+  @Field({ type: FieldTypes.STRING, label: '格式化总额', required: true })
+  formattedTotal!: string;
+
+  @Field({ type: FieldTypes.STRING, label: '供应商联系信息' })
+  supplierContactInfo?: string;
+
+  @Field({ type: FieldTypes.STRING, label: '供应商简述' })
+  supplierShortDesc?: string;
+
+  // 操作权限（使用扩展方法判断）
   @Field({ type: FieldTypes.BOOLEAN, label: '可编辑', required: true })
   canEdit!: boolean;
 

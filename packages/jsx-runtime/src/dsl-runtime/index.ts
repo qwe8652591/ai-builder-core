@@ -16,6 +16,9 @@ export * from './page-context';
 // DSL 引擎
 export * from './dsl-engine';
 
+// 应用级 DSL
+export * from './app-dsl';
+
 // 服务层 DSL
 export * from './service-dsl';
 

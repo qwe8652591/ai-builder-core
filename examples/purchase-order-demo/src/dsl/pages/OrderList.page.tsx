@@ -66,20 +66,19 @@ export default definePage({
     return PurchaseOrderStatus.getOptions();
   }, []);
 
-  // 表格列定义
+  // 表格列定义（使用扩展方法生成的格式化字段）
   const columns = useComputed(() => [
     { prop: 'orderNo' as const, label: '订单编号', width: 150 },
     { prop: 'title' as const, label: '订单标题', width: 200 },
     { prop: 'supplierName' as const, label: '供应商', width: 150 },
     { 
-      prop: 'totalAmount' as const, 
+      prop: 'formattedTotal' as const,  // 使用扩展方法生成的格式化金额
       label: '金额', 
       width: 120,
       align: 'right' as const,
-      formatter: (value: unknown) => value ? `¥${Number(value).toFixed(2)}` : '-',
     },
     { 
-      prop: 'statusLabel' as const, 
+      prop: 'statusLabel' as const,  // 使用扩展方法生成的状态标签
       label: '状态', 
       width: 100,
     },
@@ -114,7 +113,6 @@ export default definePage({
         pageNo,
         pageSize,
       });
-      
       if (result.success && result.data) {
         console.log('[OrderList] Data loaded:', result.data.list.length, 'orders');
         setOrders(result.data.list);
@@ -169,6 +167,12 @@ export default definePage({
   };
 
   const handleDelete = async (id: string) => {
+    // 确认对话框
+    const confirmed = window.confirm('确定要删除这条订单吗？删除后无法恢复。');
+    if (!confirmed) {
+      return;
+    }
+    
     console.log('[OrderList] Delete order:', id);
     try {
       const result = await PurchaseOrderAppService.deletePurchaseOrder({ id });
@@ -186,7 +190,7 @@ export default definePage({
 
   // 返回 JSX
   return (
-    <Page title="采购订单列表">
+    <Page>
       <Card>
         {/* 查询区域 */}
         <Space direction="vertical" style={{ width: '100%', marginBottom: 16 }}>

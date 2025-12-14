@@ -35,7 +35,7 @@
 export * from './types';
 
 // 导出 createElement (Classic 模式)
-export { createElement, Fragment, createFragment } from './create-element';
+export { createElement, createElement as h, Fragment, createFragment } from './create-element';
 
 // 导出 jsx/jsxs (Automatic 模式)
 export { jsx, jsxs, jsxDEV } from './jsx-runtime';
@@ -109,6 +109,10 @@ export {
   getComponent,
   getAllComponents,
   getComponentsByCategory,
+  // 应用级 DSL
+  defineApp,
+  getAppDefinition,
+  getMergedAppConfig,
   // 服务层 DSL
   defineAppService,
   defineService,
@@ -232,6 +236,11 @@ export type {
 export {
   metadataStore,
   registerMetadata,
+  registerExtension,  // 🆕 扩展注册（仅元数据）
+  defineExtension,    // 🆕 定义扩展（prototype + 元数据）
+  type ExtensionDefinition,  // 🆕 扩展定义类型
+  type DefineExtensionConfig,  // 🆕 defineExtension 配置类型
+  type MethodExtensionConfig,  // 🆕 方法扩展配置类型
   getMetadata,
   getDefinition,
   getMetadataByType,
@@ -244,6 +253,138 @@ export {
   typeLabels,
   typeIcons,
 } from './dsl-runtime/metadata-store';
+
+// 🎯 Repository 适配器系统（运行时 ORM 集成）
+export {
+  // 适配器管理
+  getRepositoryManager,
+  configureRepositoryAdapter,
+  createRepositoryProxy,
+  // 内置适配器
+  InMemoryRepositoryAdapter,
+  InMemoryAdapterFactory,
+} from './dsl-runtime/repository-adapter';
+
+export type {
+  // 基础类型
+  PageOptions as RepoPageOptions,
+  PageResult as RepoPageResult,
+  BaseEntity,
+  RepositoryMetadata,
+  MethodMetadata,
+  // 适配器接口
+  IRepositoryAdapter,
+  IRepositoryAdapterFactory,
+  // MikroORM 配置
+  MikroORMAdapterConfig,
+  IMikroORMAdapterFactory,
+} from './dsl-runtime/repository-adapter';
+
+// 🎯 ORM DSL - 声明式领域模型查询
+export {
+  // 构建器
+  QueryBuilder,
+  CreateBuilder,
+  UpdateBuilder,
+  DeleteBuilder,
+  SaveBuilder,
+  // DSL 入口函数
+  query,
+  create,
+  update,
+  remove,
+  save,            // 🆕 聚合保存
+  saveAll,         // 🆕 批量聚合保存
+  findById,        // 🆕 根据 ID 查找
+  findByIdOrThrow, // 🆕 根据 ID 查找（不存在则抛出）
+  transaction,
+  // 适配器管理
+  setORMAdapter,
+  getActiveORMAdapter,
+  getInMemoryAdapter,
+  // 内置适配器
+  InMemoryORMAdapter,
+} from './dsl-runtime/orm-dsl';
+
+export type {
+  // 类型
+  EntityClass,
+  FieldPath,
+  FieldValue,
+  NestedPath,
+  NestedValue,
+  ArrayField,
+  ArrayElement,
+  ArrayElementField,
+  ArrayElementValue,
+  SortDirection,
+  CompareOperator,
+  WhereCondition,
+  WhereGroup,
+  OrderByClause,
+  PaginationInfo,
+  QueryResult,
+  SingleResult,
+  QuerySpec,
+  // 适配器接口
+  IORMAdapter,
+} from './dsl-runtime/orm-dsl';
+
+// 🎯 MikroORM 适配器
+export {
+  MikroORMAdapter,
+  createMikroORMAdapter,
+  initMikroORM,
+} from './dsl-runtime/mikro-orm-adapter';
+
+export type {
+  MikroORMConfig,
+} from './dsl-runtime/mikro-orm-adapter';
+
+// 🎯 浏览器 SQLite 适配器
+export {
+  SQLiteBrowserAdapter,
+  createSQLiteBrowserAdapter,
+} from './dsl-runtime/sqlite-browser-adapter';
+
+export type {
+  SQLiteBrowserConfig,
+  EntityTableConfig,
+} from './dsl-runtime/sqlite-browser-adapter';
+
+// 🎯 Schema 生成器（从 metadata 自动生成表结构）
+export {
+  generateTableSchema,
+  generateAllTableSchemas,
+  generateInitSQL,
+  getEntityTableConfig,
+  getAllEntityClasses,
+  getAllEntityTableConfigs,
+} from './dsl-runtime/schema-generator';
+
+export type {
+  TableSchema,
+  TableColumn,
+} from './dsl-runtime/schema-generator';
+
+// 🎯 数据库初始化（通用入口）
+export {
+  initDatabase,
+  getDatabaseAdapter,
+  getSQLiteAdapter,
+  isDatabaseInitialized,
+  saveDatabase,
+  downloadDatabase,
+  reloadMockData,
+  clearDatabase,
+  closeDatabase,
+  resetDatabaseState,
+} from './dsl-runtime/database';
+
+export type {
+  DataSourceType,
+  DatabaseConfig,
+} from './dsl-runtime/database';
 
 // 🎯 适配器层（用于切换 UI 框架）
 export {

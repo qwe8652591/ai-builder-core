@@ -121,8 +121,11 @@ export default definePage({
   
   // 解析 URL 获取模式和 ID
   const parseUrl = () => {
+    // 检查 URL 路径判断是否为新建模式
+    const pathname = window.location.hash.replace('#', '').split('?')[0];
+    
     // /orders/create -> 新建模式
-    if (id === 'create') {
+    if (pathname === '/orders/create' || pathname.endsWith('/create')) {
       return { mode: 'create' as PageMode, id: null };
     }
     
@@ -379,14 +382,14 @@ export default definePage({
   
   // ==================== 列定义 ====================
   
-  // 查看模式的明细列
+  // 查看模式的明细列（使用扩展方法生成的格式化字段）
   const viewColumns = [
     { prop: 'materialCode', label: '物料编码', width: 120 },
-    { prop: 'materialName', label: '物料名称', width: 200 },
+    { prop: 'fullDescription', label: '物料名称', width: 200 },  // 使用扩展方法生成的完整描述
     { prop: 'quantity', label: '数量', width: 80, formatter: (v: unknown) => String(v) },
     { prop: 'unit', label: '单位', width: 60 },
-    { prop: 'unitPrice', label: '单价', width: 100, formatter: (v: unknown) => `¥${Number(v).toFixed(2)}` },
-    { prop: 'unitPrice', label: '金额', width: 120, formatter: (_: unknown, record: Record<string, unknown>) => `¥${(Number(record.quantity) * Number(record.unitPrice)).toFixed(2)}` },
+    { prop: 'formattedUnitPrice', label: '单价', width: 100 },  // 使用扩展方法生成的格式化单价
+    { prop: 'formattedAmount', label: '金额', width: 120 },  // 使用扩展方法生成的格式化金额
   ];
   
   // 编辑模式的明细列
@@ -472,26 +475,7 @@ export default definePage({
   
   return (
     <Page title={pageTitle}>
-      <Space direction="vertical" style={{ width: '100%' }}>
-        {/* 操作栏 */}
-        <Card>
-          <Space>
-            <Button onClick={handleBack}>返回列表</Button>
-            {mode === 'view' && order?.canEdit && (
-              <Button type="primary" onClick={handleEdit}>编辑</Button>
-            )}
-            {isEditing && (
-              <Space>
-                <Button type="primary" onClick={handleSave} disabled={saving}>
-                  {saving ? '保存中...' : '保存'}
-                </Button>
-                <Button onClick={handleCancel}>取消</Button>
-              </Space>
-            )}
-            {mode === 'view' && order?.canApprove && <Button>审批</Button>}
-          </Space>
-        </Card>
-        
+      <Space direction="vertical" style={{ width: '100%', paddingBottom: 80 }}>
         {/* 基本信息 */}
         <Card title="基本信息">
           {isEditing ? (
@@ -541,13 +525,13 @@ export default definePage({
               )}
             </Space>
           ) : (
-            // 查看模式：只读显示
+            // 查看模式：只读显示（使用扩展方法生成的格式化字段）
             <Space direction="vertical">
               <div><strong>订单编号：</strong>{order?.orderNo}</div>
               <div><strong>订单标题：</strong>{order?.title}</div>
-              <div><strong>供应商：</strong>{order?.supplier.name}</div>
-              <div><strong>联系人：</strong>{order?.supplier.contactPerson} | 电话：{order?.supplier.contactPhone}</div>
-              <div><strong>总金额：</strong>¥{Number(order?.totalAmount).toFixed(2)}</div>
+              <div><strong>供应商：</strong>{order?.supplierShortDesc}</div>
+              <div><strong>联系信息：</strong>{order?.supplierContactInfo}</div>
+              <div><strong>总金额：</strong>{order?.formattedTotal}</div>
               <div>
                 <strong>状态：</strong>
                 <Tag>{order?.statusLabel}</Tag>
@@ -573,15 +557,47 @@ export default definePage({
             rowKey="id"
           />
           
-          {/* 合计 */}
+          {/* 合计（编辑模式实时计算，查看模式使用扩展方法生成的格式化字段） */}
           <div style={{ marginTop: 16, textAlign: 'right', fontSize: 16 }}>
             <strong>合计金额：</strong>
             <span style={{ color: '#f5222d', fontSize: 18 }}>
-              ¥{(isEditing ? totalAmount : (order?.totalAmount || 0)).toFixed(2)}
+              {isEditing ? `¥${totalAmount.toFixed(2)}` : order?.formattedTotal}
             </span>
           </div>
         </Card>
       </Space>
+      
+      {/* 底部操作栏 - 固定在底部 */}
+      <div style={{ 
+        position: 'fixed', 
+        bottom: 0, 
+        left: 200,  /* 侧边栏宽度 */
+        right: 0,
+        padding: '16px 24px',
+        background: '#fff',
+        borderTop: '1px solid #e8e8e8',
+        boxShadow: '0 -2px 8px rgba(0,0,0,0.06)',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: 12,
+        zIndex: 100,
+      }}>
+        {isEditing ? (
+          <Space>
+            <Button type="primary" onClick={handleSave} disabled={saving}>
+              {saving ? '保存中...' : '保存'}
+            </Button>
+            <Button onClick={handleCancel}>取消</Button>
+          </Space>
+        ) : (
+          <Space>
+            {order?.canEdit && (
+              <Button type="primary" onClick={handleEdit}>编辑</Button>
+            )}
+            {order?.canApprove && <Button>审批</Button>}
+          </Space>
+        )}
+      </div>
     </Page>
   );
 });

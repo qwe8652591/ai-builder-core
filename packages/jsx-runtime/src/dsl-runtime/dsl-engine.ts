@@ -297,64 +297,100 @@ const componentRegistry = new Map<string, ComponentDefinition<unknown>>();
 /**
  * defineComponent - 定义组件（自动注册）
  * 
- * @example
+ * 支持两种语法：
+ * 
+ * @example 简洁语法（推荐，与 definePage 一致）
+ * ```tsx
+ * export const StatusTag = defineComponent<{ status: string }>(
+ *   { name: 'StatusTag', description: '状态标签' },
+ *   (props) => (
+ *     <Tag color={getStatusColor(props.status)}>
+ *       {props.status}
+ *     </Tag>
+ *   )
+ * );
+ * ```
+ * 
+ * @example 对象语法（兼容）
  * ```tsx
  * export const OrderCard = defineComponent({
  *   meta: { name: 'OrderCard', category: 'business' },
- *   props: ['order'],
  *   setup(props: { order: Order }) {
- *     return () => (
- *       <Card title={props.order.title}>
- *         <div>{props.order.amount}</div>
- *       </Card>
- *     );
+ *     return () => <Card>{props.order.amount}</Card>;
  *   }
  * });
  * ```
  */
-export function defineComponent<P = Record<string, unknown>>(options: {
-  meta?: ComponentMeta;
-  props?: string[];
+export function defineComponent<P = Record<string, unknown>>(
+  metaOrOptions: ComponentMeta | {
+    meta?: ComponentMeta;
+    props?: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setup: (props: P) => () => any;
+  },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setup: (props: P) => () => any;
-}): ComponentDefinition<P> {
+  setupFn?: (props: P) => any
+): ComponentDefinition<P> {
+  // 🎯 统一处理两种调用方式
+  let meta: ComponentMeta | undefined;
+  let props: string[] | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let setup: (props: P) => () => any;
+  
+  if (setupFn) {
+    // 简洁语法：defineComponent(meta, setupFn)
+    meta = metaOrOptions as ComponentMeta;
+    setup = (p: P) => () => setupFn(p);
+  } else {
+    // 对象语法：defineComponent({ meta, setup })
+    const options = metaOrOptions as {
+      meta?: ComponentMeta;
+      props?: string[];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setup: (props: P) => () => any;
+    };
+    meta = options.meta;
+    props = options.props;
+    setup = options.setup;
+  }
+  
   // 渲染函数
-  const render = (props: P) => {
+  const render = (p: P) => {
     const ctx = new PageContext({});
-    const renderFn = runInContext(ctx, () => options.setup(props));
+    const renderFn = runInContext(ctx, () => setup(p));
     return renderFn() as VNode | null;
   };
   
   // 🎯 核心：创建一个既是函数又有属性的对象
   // 这样可以直接作为 JSX 标签使用：<MyComponent prop="value" />
-  const Component = function(props: P) {
-    return render(props);
+  const Component = function(p: P) {
+    return render(p);
   } as ComponentDefinition<P>;
   
   // 附加元数据
-  Component.meta = options.meta || { name: 'Anonymous' };
-  Component.props = options.props;
-  Component.setup = options.setup;
+  Component.meta = meta || { name: 'Anonymous' };
+  Component.props = props;
+  Component.setup = setup;
   Component.render = render;
   
   // 设置函数名称（用于调试）
   Object.defineProperty(Component, 'name', { 
-    value: options.meta?.name || 'AnonymousComponent',
+    value: meta?.name || 'AnonymousComponent',
     writable: false 
   });
   
   // 自动注册到组件注册表
-  if (options.meta?.name) {
-    componentRegistry.set(options.meta.name, Component as ComponentDefinition<unknown>);
-    console.log(`[ComponentRegistry] 已注册组件: ${options.meta.name}`);
+  if (meta?.name) {
+    componentRegistry.set(meta.name, Component as ComponentDefinition<unknown>);
+    console.log(`[ComponentRegistry] 已注册组件: ${meta.name}`);
     
     // 🎯 注册到 Metadata Store（用于架构展示）
     registerMetadata({
       __type: 'component',
-      name: options.meta.name,
-      meta: options.meta,
-      description: options.meta.description,
-      props: options.props,
+      name: meta.name,
+      meta: meta,
+      description: meta.description,
+      props: props,
       definition: Component,
     });
   }
