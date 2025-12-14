@@ -4,10 +4,12 @@
  * 🎯 从 Entity 元数据自动生成数据库表结构
  */
 
-import { FieldTypes } from './model-dsl';
-import { getEntityDefinition } from './decorators';
-import { getMetadataByType } from './metadata-store';
-import type { EntityClass } from './orm-dsl';
+import { 
+  FieldTypes, 
+  getEntityDefinition, 
+  getMetadataByType,
+  type EntityClass 
+} from '@ai-builder/jsx-runtime';
 
 // ==================== 类型定义 ====================
 

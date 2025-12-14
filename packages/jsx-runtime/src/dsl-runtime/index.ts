@@ -1,7 +1,12 @@
 /**
- * DSL 运行时
+ * DSL 定义层 + 核心运行时原语
  * 
- * 提供响应式原语和生命周期管理，不依赖任何 UI 框架
+ * 职责：
+ * - DSL 定义 API（definePage, defineEntity 等）
+ * - 元数据管理
+ * - 核心运行时原语（状态、生命周期、路由）
+ * 
+ * 注：数据库、ORM 适配器等实现在 @ai-builder/dsl-runtime
  */
 
 // 状态管理
@@ -12,6 +17,9 @@ export * from './lifecycle';
 
 // 页面上下文
 export * from './page-context';
+
+// 路由 DSL
+export * from './router';
 
 // DSL 引擎
 export * from './dsl-engine';
@@ -40,5 +48,5 @@ export * from './decorators';
 // 类型系统
 export * from './type-system';
 
-// 路由 DSL
-export * from './router';
+// ORM DSL
+export * from './orm-dsl';

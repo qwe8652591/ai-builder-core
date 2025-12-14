@@ -55,7 +55,7 @@ import type {
   WhereCondition,
   WhereGroup,
   EntityClass,
-} from './orm-dsl';
+} from '@ai-builder/jsx-runtime';
 
 // ==================== 类型定义 ====================
 

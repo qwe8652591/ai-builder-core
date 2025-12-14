@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 /**
  * DSL Runtime 入口模板
  * 
@@ -27,12 +28,13 @@ import zhCN from 'antd/locale/zh_CN';
 import { 
   createDSLRouter,
   registerComponents,
-  initDatabase,
   getMenuRoutes,
   useNavigate,
   getMergedAppConfig,
   vnodeToReactElement,
 } from '@ai-builder/jsx-runtime';
+
+import { initDatabase } from './database';
 
 import { 
   getAntdComponentMapping,

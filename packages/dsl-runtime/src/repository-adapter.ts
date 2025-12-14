@@ -33,7 +33,7 @@
  * ```
  */
 
-import { getMetadataByType } from './metadata-store';
+import { getMetadataByType } from '@ai-builder/jsx-runtime';
 
 // ==================== 类型定义 ====================
 

@@ -28,7 +28,7 @@
 import {
   setORMAdapter,
   InMemoryORMAdapter,
-} from './orm-dsl';
+} from '@ai-builder/jsx-runtime';
 import {
   createSQLiteBrowserAdapter,
   type SQLiteBrowserAdapter,

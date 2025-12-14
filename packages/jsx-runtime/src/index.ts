@@ -1,35 +1,23 @@
 /**
  * @ai-builder/jsx-runtime
  * 
- * 自定义 JSX 运行时，将 JSX 编译为框架无关的 VNode
+ * 自定义 JSX 运行时 + DSL 定义层
+ * 
+ * 🎯 职责划分：
+ * - jsx-runtime: JSX 编译、DSL 定义 API、元数据管理
+ * - dsl-runtime: 运行时功能（路由、状态、数据库等）
  * 
  * @example
  * ```tsx
- * // tsconfig.json 或 vite.config.ts 配置
- * {
- *   "compilerOptions": {
- *     "jsx": "react-jsx",
- *     "jsxImportSource": "@ai-builder/jsx-runtime"
- *   }
- * }
+ * // DSL 定义（从 jsx-runtime）
+ * import { definePage, defineEntity, Field } from '@ai-builder/jsx-runtime';
  * 
- * // 编写 DSL
- * import { definePage, useState } from '@ai-builder/dsl/ui';
- * import { Page, Table } from '@ai-builder/std-ui';
- * 
- * export default definePage({
- *   meta: { title: '订单列表' },
- *   setup() {
- *     const [data, setData] = useState([]);
- *     return (
- *       <Page title="订单">
- *         <Table data={data} />
- *       </Page>
- *     );
- *   }
- * });
+ * // 运行时功能（从 dsl-runtime）
+ * import { initDatabase, createDSLRouter } from '@ai-builder/dsl-runtime';
  * ```
  */
+
+// ==================== JSX 核心 ====================
 
 // 导出类型
 export * from './types';
@@ -44,7 +32,8 @@ export { jsx, jsxs, jsxDEV } from './jsx-runtime';
 export { renderToString, vnodeToJson } from './render-to-string';
 export { traverseVNode, flattenChildren, cloneVNode, getDisplayName } from './utils';
 
-// React 渲染器（用于将 VNode 转换为 React 元素）
+// ==================== React 渲染器 ====================
+
 export { 
   vnodeToReact, 
   registerAntdComponents,
@@ -52,30 +41,25 @@ export {
   createDSLApp,
 } from './react-renderer';
 
-// React 桥接器（运行时桥接 DSL 到 React）
 export {
-  // 组件
   DSLPageRenderer,
   DSLAppRenderer,
-  // 🎯 路由组件（推荐）
   RouterProvider,
   createDSLRouter,
-  // Hook 桥接
   useState as useBridgedState,
   useEffect as useBridgedEffect,
   useComputed as useBridgedComputed,
-  // VNode 转换
   vnodeToReactElement,
   registerComponents,
 } from './react-bridge';
 
-// DSL 运行时
+// ==================== DSL 定义层 + 核心运行时 ====================
+
 export {
   // 响应式原语
   useState,
   useComputed,
   useWatch,
-  // Hook 代理（用于外部渲染器注入）
   setHookImplementation,
   getHookImplementation,
   type HookImplementation,
@@ -86,7 +70,6 @@ export {
   onUnmounted,
   onBeforeMount,
   onBeforeUnmount,
-  // Effect Hook 代理
   setEffectHookImplementation,
   getEffectHookImplementation,
   type EffectHookImplementation,
@@ -95,13 +78,33 @@ export {
   getCurrentContext,
   setCurrentContext,
   runInContext,
+  // 路由 DSL
+  useNavigate,
+  useParams,
+  useQuery,
+  useLocation,
+  setRouterAdapter,
+  getRouterAdapter,
+  defineRouteOverrides,
+  getRouteOverride,
+  clearRouteOverrides,
+  buildUrl,
+  parseUrl,
+  HashRouterAdapter,
+  createRouter,
+  setRouter,
+  getRouter,
+  flattenRoutes,
+  getMenuRoutes,
+  filterRoutesByPermission,
+  clearPageCache,
   // DSL 引擎
   DSLEngine,
   getEngine,
   setEngine,
   definePage,
   defineComponent,
-  // 页面注册表（路由匹配）
+  // 页面注册表
   getPageByRoute,
   getDefaultPage,
   getAllPages,
@@ -140,7 +143,6 @@ export {
   defineConstant,
   getDTOFields,
   getConstantValue,
-  // DTO 类型安全常量
   DTOFieldTypes,
   ConstantTypes,
   // 应用层通用类型
@@ -191,27 +193,6 @@ export {
   getRepositoryDefinition,
   getServiceDefinition,
   getAppServiceDefinition,
-  // 路由 DSL
-  useNavigate,
-  useParams,
-  useQuery,
-  useLocation,
-  setRouterAdapter,
-  getRouterAdapter,
-  defineRouteOverrides,
-  getRouteOverride,
-  clearRouteOverrides,
-  buildUrl,
-  parseUrl,
-  HashRouterAdapter,
-  // 🎯 路由配置 API（参考 React Router v6）
-  createRouter,
-  setRouter,
-  getRouter,
-  flattenRoutes,
-  getMenuRoutes,
-  filterRoutesByPermission,
-  clearPageCache,
 } from './dsl-runtime';
 
 // DSL 转 JSON 工具
@@ -232,15 +213,16 @@ export type {
   DSLByLayer,
 } from './dsl-runtime/dsl-to-json';
 
-// Metadata Store
+// ==================== Metadata Store ====================
+
 export {
   metadataStore,
   registerMetadata,
-  registerExtension,  // 🆕 扩展注册（仅元数据）
-  defineExtension,    // 🆕 定义扩展（prototype + 元数据）
-  type ExtensionDefinition,  // 🆕 扩展定义类型
-  type DefineExtensionConfig,  // 🆕 defineExtension 配置类型
-  type MethodExtensionConfig,  // 🆕 方法扩展配置类型
+  registerExtension,
+  defineExtension,
+  type ExtensionDefinition,
+  type DefineExtensionConfig,
+  type MethodExtensionConfig,
   getMetadata,
   getDefinition,
   getMetadataByType,
@@ -254,60 +236,30 @@ export {
   typeIcons,
 } from './dsl-runtime/metadata-store';
 
-// 🎯 Repository 适配器系统（运行时 ORM 集成）
-export {
-  // 适配器管理
-  getRepositoryManager,
-  configureRepositoryAdapter,
-  createRepositoryProxy,
-  // 内置适配器
-  InMemoryRepositoryAdapter,
-  InMemoryAdapterFactory,
-} from './dsl-runtime/repository-adapter';
+// ==================== ORM DSL ====================
 
-export type {
-  // 基础类型
-  PageOptions as RepoPageOptions,
-  PageResult as RepoPageResult,
-  BaseEntity,
-  RepositoryMetadata,
-  MethodMetadata,
-  // 适配器接口
-  IRepositoryAdapter,
-  IRepositoryAdapterFactory,
-  // MikroORM 配置
-  MikroORMAdapterConfig,
-  IMikroORMAdapterFactory,
-} from './dsl-runtime/repository-adapter';
-
-// 🎯 ORM DSL - 声明式领域模型查询
 export {
-  // 构建器
   QueryBuilder,
   CreateBuilder,
   UpdateBuilder,
   DeleteBuilder,
   SaveBuilder,
-  // DSL 入口函数
   query,
   create,
   update,
   remove,
-  save,            // 🆕 聚合保存
-  saveAll,         // 🆕 批量聚合保存
-  findById,        // 🆕 根据 ID 查找
-  findByIdOrThrow, // 🆕 根据 ID 查找（不存在则抛出）
+  save,
+  saveAll,
+  findById,
+  findByIdOrThrow,
   transaction,
-  // 适配器管理
   setORMAdapter,
   getActiveORMAdapter,
   getInMemoryAdapter,
-  // 内置适配器
   InMemoryORMAdapter,
 } from './dsl-runtime/orm-dsl';
 
 export type {
-  // 类型
   EntityClass,
   FieldPath,
   FieldValue,
@@ -326,77 +278,18 @@ export type {
   QueryResult,
   SingleResult,
   QuerySpec,
-  // 适配器接口
   IORMAdapter,
 } from './dsl-runtime/orm-dsl';
 
-// 🎯 MikroORM 适配器
+// ==================== 适配器层 ====================
+
 export {
-  MikroORMAdapter,
-  createMikroORMAdapter,
-  initMikroORM,
-} from './dsl-runtime/mikro-orm-adapter';
-
-export type {
-  MikroORMConfig,
-} from './dsl-runtime/mikro-orm-adapter';
-
-// 🎯 浏览器 SQLite 适配器
-export {
-  SQLiteBrowserAdapter,
-  createSQLiteBrowserAdapter,
-} from './dsl-runtime/sqlite-browser-adapter';
-
-export type {
-  SQLiteBrowserConfig,
-  EntityTableConfig,
-} from './dsl-runtime/sqlite-browser-adapter';
-
-// 🎯 Schema 生成器（从 metadata 自动生成表结构）
-export {
-  generateTableSchema,
-  generateAllTableSchemas,
-  generateInitSQL,
-  getEntityTableConfig,
-  getAllEntityClasses,
-  getAllEntityTableConfigs,
-} from './dsl-runtime/schema-generator';
-
-export type {
-  TableSchema,
-  TableColumn,
-} from './dsl-runtime/schema-generator';
-
-// 🎯 数据库初始化（通用入口）
-export {
-  initDatabase,
-  getDatabaseAdapter,
-  getSQLiteAdapter,
-  isDatabaseInitialized,
-  saveDatabase,
-  downloadDatabase,
-  reloadMockData,
-  clearDatabase,
-  closeDatabase,
-  resetDatabaseState,
-} from './dsl-runtime/database';
-
-export type {
-  DataSourceType,
-  DatabaseConfig,
-} from './dsl-runtime/database';
-
-// 🎯 适配器层（用于切换 UI 框架）
-export {
-  // 适配器注册表
   adapterRegistry,
-  // 便捷函数
   registerAdapter,
   activateAdapter,
   registerComponentMapping,
   getAdaptedComponent,
   getAllComponentMappings,
-  // 预定义适配器名称
   ADAPTER_NAMES,
 } from './adapter';
 
@@ -407,6 +300,8 @@ export type {
   AdapterName,
 } from './adapter';
 
+// ==================== 类型导出 ====================
+
 export type {
   DSLType as MetadataDSLType,
   DSLLayer,
@@ -416,17 +311,26 @@ export type {
 } from './dsl-runtime/metadata-store';
 
 export type {
+  // 状态类型
   StateRef,
-  // StateSetter 已在上面导出
+  // 页面上下文类型
   IPageContext,
+  // 路由类型
+  NavigateOptions,
+  LocationInfo,
+  RouteMatch,
+  RouterAdapter,
+  RouteGuard,
+  RouteOverride,
+  RouteConfig,
+  Router,
+  // DSL 引擎类型
   PageMeta,
   LifecycleType,
   PageDefinition,
   DSLEngineConfig,
-  // 组件类型
   ComponentMeta,
   ComponentDefinition,
-  // 服务层 DSL 类型
   AppServiceMeta,
   AppServiceDefinition,
   ServiceMeta,
@@ -434,7 +338,6 @@ export type {
   RepositoryMeta,
   RepositoryDefinition,
   MethodsDefinition,
-  // 模型层 DSL 类型
   FieldType,
   RelationType,
   CascadeType,
@@ -445,26 +348,22 @@ export type {
   EnumDefinition,
   ValueObjectDefinition,
   EntityDefinition,
-  // DTO 层 DSL 类型
   DTOFieldType,
   DTOFieldDefinition,
   DTOFieldsDefinition,
   DTODefinition,
   ConstantType,
   ConstantDefinition,
-  // DTO 类型推断工具
   InferFieldType,
   InferDTOFields,
   InferDTOType,
-  InferDTO,  // 简写别名
-  // 领域逻辑 DSL 类型
+  InferDTO,
   ValidationRuleDefinition,
   ComputationRuleDefinition,
   ActionRuleDefinition,
   RuleDefinition,
   RuleInput,
   DomainLogicDefinition,
-  // 装饰器类型
   ColumnOptions,
   RelationOptions,
   EntityOptions,
@@ -475,15 +374,4 @@ export type {
   EnhancedEnum,
   TypedEnumConfig,
   TypedEnum,
-  // 路由 DSL 类型
-  NavigateOptions,
-  LocationInfo,
-  RouteMatch,
-  RouterAdapter,
-  RouteGuard,
-  RouteOverride,
-  // 🎯 路由配置类型（参考 React Router v6）
-  RouteConfig,
-  Router,
 } from './dsl-runtime';
-
