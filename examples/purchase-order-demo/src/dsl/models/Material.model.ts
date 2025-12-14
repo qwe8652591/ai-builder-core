@@ -7,7 +7,7 @@ import {
   Column,
   PrimaryKey,
   FieldTypes,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 /**
  * 物料实体

@@ -16,7 +16,7 @@ import {
   Computation, 
   Check, 
   Action,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 import { PurchaseOrderStatus } from '../models/PurchaseOrder.model';
 
 // ==================== 类型定义 ====================

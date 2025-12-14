@@ -17,7 +17,7 @@ import {
   remove,
   save,        // 🆕 聚合保存
   findById,    // 🆕 根据 ID 查找
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // 🎯 直接使用领域模型，避免重复定义
 import { 

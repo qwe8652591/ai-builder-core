@@ -7,7 +7,7 @@
  * 
  * @example
  * ```typescript
- * import { MikroORMAdapter } from '@ai-builder/jsx-runtime';
+ * import { MikroORMAdapter } from '@qwe8652591/dsl-core';
  * import { MikroORM } from '@mikro-orm/core';
  * 
  * // 初始化 MikroORM
@@ -36,7 +36,7 @@ import type {
   WhereCondition,
   WhereGroup,
   EntityClass,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // ==================== 类型定义 ====================
 
@@ -383,7 +383,7 @@ export class MikroORMAdapter implements IORMAdapter {
  * @example
  * ```typescript
  * import { MikroORM } from '@mikro-orm/core';
- * import { createMikroORMAdapter, setORMAdapter } from '@ai-builder/jsx-runtime';
+ * import { createMikroORMAdapter, setORMAdapter } from '@qwe8652591/dsl-core';
  * 
  * const orm = await MikroORM.init({...});
  * const adapter = createMikroORMAdapter(orm);

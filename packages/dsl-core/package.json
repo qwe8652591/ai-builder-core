@@ -1,7 +1,7 @@
 {
-  "name": "@ai-builder/jsx-runtime",
+  "name": "@qwe8652591/dsl-core",
   "version": "0.1.0",
-  "description": "Custom JSX runtime for AI Builder DSL - framework-agnostic virtual DOM",
+  "description": "AI Builder DSL Core - DSL definitions, decorators and virtual DOM runtime",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -62,11 +62,16 @@
       "optional": true
     }
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qwe8652591/ai-builder-core.git",
+    "directory": "packages/dsl-core"
+  },
   "publishConfig": {
-    "access": "public"
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@ai-builder/std-ui": "workspace:*",
+    "@qwe8652591/std-ui": "workspace:*",
     "reflect-metadata": "^0.2.2"
   }
 }

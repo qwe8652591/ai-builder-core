@@ -29,7 +29,7 @@ import {
   getMenuRoutes,
   useNavigate,
   getMergedAppConfig,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 import { initDatabase } from './database';
 import { 

@@ -4,8 +4,8 @@
  * 使用 defineComponent 简洁语法定义
  */
 
-import { defineComponent } from '@ai-builder/jsx-runtime';
-import { Card, Space, Tag } from '@ai-builder/std-ui';
+import { defineComponent } from '@qwe8652591/dsl-core';
+import { Card, Space, Tag } from '@qwe8652591/std-ui';
 import type { PurchaseOrderListItemDTO } from '../dto/PurchaseOrder.dto';
 
 /** 订单卡片 Props */

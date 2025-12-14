@@ -11,7 +11,7 @@
  * 使用方式：
  * ```bash
  * # 在 DSL 项目目录下运行
- * npx @ai-builder/dsl-runtime dev
+ * npx @qwe8652591/dsl-runtime dev
  * ```
  */
 
@@ -86,7 +86,7 @@ export {
 } from './react-bridge.js';
 
 // ==================== 重新导出核心运行时（从 jsx-runtime） ====================
-// 这些也可以直接从 @ai-builder/jsx-runtime 导入
+// 这些也可以直接从 @qwe8652591/dsl-core 导入
 
 export {
   // 路由
@@ -123,4 +123,4 @@ export {
   // 元数据
   getMetadataByType,
   getLayeredStats,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';

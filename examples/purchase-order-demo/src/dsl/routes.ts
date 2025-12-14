@@ -10,7 +10,7 @@
  * 4. 与 DSL 页面系统深度集成
  */
 
-import type { RouteConfig } from '@ai-builder/jsx-runtime';
+import type { RouteConfig } from '@qwe8652591/dsl-core';
 
 // 🎯 从 jsx-runtime 导出路由 API（让使用方可以直接从 routes.ts 导入）
 export { 
@@ -20,7 +20,7 @@ export {
   useLocation,
   createRouter,
   type RouteConfig,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // ==================== 路由路径常量（类型安全导航） ====================
 
@@ -137,7 +137,7 @@ export const routes: RouteConfig[] = [
 
 // ==================== 辅助函数 ====================
 
-// 🎯 辅助函数已移至 @ai-builder/jsx-runtime
+// 🎯 辅助函数已移至 @qwe8652591/dsl-core
 // 可直接使用：
 // - flattenRoutes(routes) - 扁平化嵌套路由
 // - getMenuRoutes(routes) - 获取菜单路由

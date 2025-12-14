@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import type { VNode, VNodeChild } from '@ai-builder/jsx-runtime';
+import type { VNode, VNodeChild } from '@qwe8652591/dsl-core';
 import { 
   Fragment,
   // DSL 引擎
@@ -35,7 +35,7 @@ import {
   getRouter,
   type Router,
   type RouteConfig,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // ==================== 类型定义 ====================
 
@@ -247,7 +247,7 @@ export function vnodeToReactElement(vnode: VNodeChild): React.ReactNode {
         }
       }
       
-      // 虚拟组件（@ai-builder/std-ui）：返回 null 的占位符
+      // 虚拟组件（@qwe8652591/std-ui）：返回 null 的占位符
       // 尝试通过函数名查找映射
       if (funcName && componentMapping[funcName]) {
         return createReactElement(componentMapping[funcName], props, key);
@@ -623,7 +623,7 @@ interface RouterProviderProps {
  * 
  * @example
  * ```tsx
- * import { createRouter, RouterProvider } from '@ai-builder/jsx-runtime';
+ * import { createRouter, RouterProvider } from '@qwe8652591/dsl-core';
  * import { routes } from './routes';
  * 
  * const router = createRouter(routes);
@@ -696,7 +696,7 @@ export const RouterProvider: React.FC<RouterProviderProps> = ({
  * 
  * @example
  * ```tsx
- * import { createDSLRouter } from '@ai-builder/jsx-runtime';
+ * import { createDSLRouter } from '@qwe8652591/dsl-core';
  * import { routes } from './routes';
  * 
  * const { router, Provider } = createDSLRouter(routes);

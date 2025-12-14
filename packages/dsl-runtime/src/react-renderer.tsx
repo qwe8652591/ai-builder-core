@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
-import type { VNode, VNodeChild } from '@ai-builder/jsx-runtime';
-import { Fragment } from '@ai-builder/jsx-runtime';
+import type { VNode, VNodeChild } from '@qwe8652591/dsl-core';
+import { Fragment } from '@qwe8652591/dsl-core';
 
 // Ant Design 组件映射
 let antdComponents: Record<string, React.ComponentType<any>> | null = null;

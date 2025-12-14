@@ -18,7 +18,7 @@
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────┐
-│               @ai-builder/jsx-runtime                        │
+│               @qwe8652591/dsl-core                        │
 │  Repository 适配器管理器 + 元数据存储                          │
 └─────────────────────────────────────────────────────────────┘
                               │
@@ -63,7 +63,7 @@ packages/orm-mikro/
 ### 1. 适配器配置
 
 ```typescript
-import { configureRepositoryAdapter } from '@ai-builder/jsx-runtime';
+import { configureRepositoryAdapter } from '@qwe8652591/dsl-core';
 import { MikroORMAdapterFactory } from '@ai-builder/orm-mikro';
 
 // 创建 MikroORM 适配器工厂
@@ -102,7 +102,7 @@ import type {
   PageOptions, 
   PageResult,
   RepositoryMetadata 
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 export class MikroORMRepositoryAdapter<T extends BaseEntity> 
   implements IRepositoryAdapter<T> {
@@ -216,7 +216,7 @@ export class MikroORMRepositoryAdapter<T extends BaseEntity>
 // src/schema/entity-generator.ts
 
 import { EntitySchema, Type } from '@mikro-orm/core';
-import { getMetadataByType, FieldTypes } from '@ai-builder/jsx-runtime';
+import { getMetadataByType, FieldTypes } from '@qwe8652591/dsl-core';
 
 /**
  * 从 DSL Entity 定义生成 MikroORM EntitySchema
@@ -359,7 +359,7 @@ pnpm add @ai-builder/orm-mikro @mikro-orm/core @mikro-orm/postgresql
 ```typescript
 // src/infrastructure/database.ts
 
-import { configureRepositoryAdapter } from '@ai-builder/jsx-runtime';
+import { configureRepositoryAdapter } from '@qwe8652591/dsl-core';
 import { MikroORMAdapterFactory } from '@ai-builder/orm-mikro';
 
 export async function initDatabase() {

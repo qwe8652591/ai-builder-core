@@ -1109,7 +1109,7 @@ TS 的 `number` 太过宽泛，我们需要通过注解或专用类型来精确�
 module.exports = {
     root: true,
     parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint', '@ai-builder/eslint-plugin'],
+    plugins: ['@typescript-eslint', '@qwe8652591/eslint-plugin'],
     
     overrides: [
         // ==================== .model.ts 约束 ====================
@@ -1188,7 +1188,7 @@ module.exports = {
 
 ##### 自定义 ESLint 插件规则
 
-我们提供 `@ai-builder/eslint-plugin` 包，包含以下自定义规则：
+我们提供 `@qwe8652591/eslint-plugin` 包，包含以下自定义规则：
 
 | 规则 | 适用文件 | 说明 |
 | :--- | :--- | :--- |
@@ -3003,7 +3003,7 @@ SAP Fiori (SAPUI5) 采用 "Layered Repository" 机制实现无侵入 UI 扩展�
 
 **目标**: 实现 DSL 与 TypeScript 生态的深度集成，提供一流的 IDE 开发体验。
 
-1.  **`@ai-builder/eslint-plugin` ESLint 插件**
+1.  **`@qwe8652591/eslint-plugin` ESLint 插件**
     - 实现分层引用约束规则 (参考 3.12 节的约束矩阵)
     - 实现 `no-async-in-domain`, `no-this-in-domain` 等自定义规则
     - 实现 `model-fields-only`, `use-inject-decorator` 等规范检查

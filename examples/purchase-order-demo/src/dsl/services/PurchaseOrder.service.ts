@@ -4,7 +4,7 @@
  * 业务逻辑层，调用 Repository
  */
 
-import { Service, Method } from '@ai-builder/jsx-runtime';
+import { Service, Method } from '@qwe8652591/dsl-core';
 import { 
   PurchaseOrderStatus,
   type PurchaseOrderItem,

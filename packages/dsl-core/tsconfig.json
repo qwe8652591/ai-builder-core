@@ -17,8 +17,8 @@
     "jsx": "preserve",
     "baseUrl": ".",
     "paths": {
-      "@ai-builder/std-ui": ["../std-ui/src/index.ts"],
-      "@ai-builder/std-ui/*": ["../std-ui/src/*"]
+      "@qwe8652591/std-ui": ["../std-ui/src/index.ts"],
+      "@qwe8652591/std-ui/*": ["../std-ui/src/*"]
     }
   },
   "include": ["src/**/*"],

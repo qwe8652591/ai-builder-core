@@ -81,7 +81,7 @@ import {
   useNavigate,
   getMergedAppConfig,
   vnodeToReactElement,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 import { getAntdComponentMapping } from '@dsl-runtime/antd-components/adapter';
 
@@ -574,8 +574,8 @@ render(routes, initSqlContent);
         
         // 🎯 AI Builder 包从 workspace 解析
         '@ai-builder/runtime-renderer': resolvePackage('@ai-builder/runtime-renderer'),
-        '@ai-builder/jsx-runtime': resolvePackage('@ai-builder/jsx-runtime'),
-        '@ai-builder/std-ui': resolvePackage('@ai-builder/std-ui'),
+        '@qwe8652591/dsl-core': resolvePackage('@qwe8652591/dsl-core'),
+        '@qwe8652591/std-ui': resolvePackage('@qwe8652591/std-ui'),
       },
       // 确保运行时依赖不会被重复加载
       dedupe: ['react', 'react-dom', 'react-router-dom', 'antd', '@ant-design/icons'],

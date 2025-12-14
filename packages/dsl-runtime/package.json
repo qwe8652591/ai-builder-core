@@ -1,20 +1,40 @@
 {
-  "name": "@ai-builder/dsl-runtime",
-  "version": "1.0.0",
+  "name": "@qwe8652591/dsl-runtime",
+  "version": "0.1.0",
   "description": "DSL Runtime - 解析和运行 DSL 项目",
   "type": "module",
-  "main": "src/index.ts",
-  "bin": {
-    "dsl-runtime": "./src/cli.ts"
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
+  "bin": {
+    "dsl-runtime": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "tsx src/cli.ts dev",
     "build": "tsup",
     "start": "tsx src/cli.ts start"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qwe8652591/ai-builder-core.git",
+    "directory": "packages/dsl-runtime"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
-    "@ai-builder/jsx-runtime": "workspace:*",
-    "@ai-builder/std-ui": "workspace:*",
+    "@qwe8652591/dsl-core": "workspace:*",
+    "@qwe8652591/std-ui": "workspace:*",
     "@vitejs/plugin-react": "^4.3.0",
     "vite": "^5.0.0",
     "react": "^18.2.0",

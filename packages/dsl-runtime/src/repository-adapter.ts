@@ -33,7 +33,7 @@
  * ```
  */
 
-import { getMetadataByType } from '@ai-builder/jsx-runtime';
+import { getMetadataByType } from '@qwe8652591/dsl-core';
 
 // ==================== 类型定义 ====================
 

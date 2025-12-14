@@ -4,7 +4,7 @@
  * 管理单个页面的状态、计算属性、生命周期
  */
 
-import type { VNode } from '@ai-builder/jsx-runtime';
+import type { VNode } from '@qwe8652591/dsl-core';
 
 /** 生命周期类型 */
 export type LifecycleType = 'beforeMount' | 'mounted' | 'beforeUnmount' | 'unmounted';

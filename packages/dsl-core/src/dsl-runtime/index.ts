@@ -6,7 +6,7 @@
  * - 元数据管理
  * - 核心运行时原语（状态、生命周期、路由）
  * 
- * 注：数据库、ORM 适配器等实现在 @ai-builder/dsl-runtime
+ * 注：数据库、ORM 适配器等实现在 @qwe8652591/dsl-runtime
  */
 
 // 状态管理
@@ -50,3 +50,6 @@ export * from './type-system';
 
 // ORM DSL
 export * from './orm-dsl';
+
+// 项目配置类型
+export * from './project-config';

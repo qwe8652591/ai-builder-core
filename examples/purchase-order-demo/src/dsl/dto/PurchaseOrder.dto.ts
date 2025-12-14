@@ -10,7 +10,7 @@ import {
   DTO,
   Field,
   FieldTypes,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 import { 
   PurchaseOrder,
   PurchaseOrderItem as PurchaseOrderItemModel,

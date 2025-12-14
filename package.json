@@ -1,27 +1,18 @@
 {
-  "name": "@ai-builder/monorepo",
+  "name": "@qwe8652591/monorepo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "lint": "eslint 'packages/**/*.{ts,tsx}' 'examples/**/*.{ts,tsx}'",
-    "lint:fix": "eslint 'packages/**/*.{ts,tsx}' 'examples/**/*.{ts,tsx}' --fix",
-    "prepare": "husky"
+    "lint:fix": "eslint 'packages/**/*.{ts,tsx}' 'examples/**/*.{ts,tsx}' --fix"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "eslint": "^8.57.0",
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.0",
-    "@ai-builder/eslint-plugin": "workspace:*"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "eslint --fix"
-    ]
+    "@qwe8652591/eslint-plugin": "workspace:*"
   }
 }
-

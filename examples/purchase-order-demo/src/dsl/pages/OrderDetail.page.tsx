@@ -14,7 +14,7 @@ import {
   useComputed,
   useParams,
   useQuery,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // 路由（类型安全）
 import { Routes, useNavigate } from '../routes';
@@ -28,7 +28,7 @@ import {
   Table,
   Input,
   Select,
-} from '@ai-builder/std-ui';
+} from '@qwe8652591/std-ui';
 
 // 使用 DSL 定义的服务和类型
 // ✅ View 层只从 AppService 和 DTO 层导入，不直接访问 Model 层

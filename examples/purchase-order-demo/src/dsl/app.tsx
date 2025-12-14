@@ -6,8 +6,8 @@
  * 使用简洁语法定义组件（与 definePage 一致）
  */
 
-import { defineApp, defineComponent } from '@ai-builder/jsx-runtime';
-import { Space, Button, Icon, Tag } from '@ai-builder/std-ui';
+import { defineApp, defineComponent } from '@qwe8652591/dsl-core';
+import { Space, Button, Icon, Tag } from '@qwe8652591/std-ui';
 
 // ==================== 自定义头部右侧组件 ====================
 

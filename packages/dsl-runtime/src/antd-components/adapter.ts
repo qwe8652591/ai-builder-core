@@ -4,8 +4,8 @@
  * 提供预配置的 Ant Design 组件映射，用于 DSL 到 React 的转换
  */
 
-import type { AdapterConfig, ComponentMapping } from '@ai-builder/jsx-runtime';
-import { registerAdapter, activateAdapter, ADAPTER_NAMES } from '@ai-builder/jsx-runtime';
+import type { AdapterConfig, ComponentMapping } from '@qwe8652591/dsl-core';
+import { registerAdapter, activateAdapter, ADAPTER_NAMES } from '@qwe8652591/dsl-core';
 
 // 导入所有适配过的组件
 import {
@@ -115,7 +115,7 @@ export function registerAntdAdapterOnly(): void {
  * @example
  * ```typescript
  * import { getAntdComponentMapping } from '@ai-builder/runtime-renderer';
- * import { registerComponents } from '@ai-builder/jsx-runtime';
+ * import { registerComponents } from '@qwe8652591/dsl-core';
  * 
  * const customMapping = {
  *   ...getAntdComponentMapping(),

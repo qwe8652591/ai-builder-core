@@ -12,7 +12,7 @@ import {
   getLayeredMetadata,
   type BaseDSLMetadata,
   type LayeredMetadata,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 import { 
   Page, 
@@ -21,7 +21,7 @@ import {
   Input,
   Button,
   Tag,
-} from '@ai-builder/std-ui';
+} from '@qwe8652591/std-ui';
 
 // ==================== 类型定义 ====================
 

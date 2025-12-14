@@ -1,6 +1,6 @@
 /**
  * 标准 UI 组件的 Ant Design 5 适配器实现
- * 将 @ai-builder/std-ui 的虚拟组件映射到真实的 Ant Design 组件
+ * 将 @qwe8652591/std-ui 的虚拟组件映射到真实的 Ant Design 组件
  */
 
 import React from 'react';
@@ -54,7 +54,7 @@ import * as Icons from '@ant-design/icons';
  * 
  * 架构说明：
  * - @ai-builder/ui-types: 纯类型定义（SSOT）
- * - @ai-builder/std-ui: 标准协议层，重新导出 ui-types 的类型 + 虚拟组件声明
+ * - @qwe8652591/std-ui: 标准协议层，重新导出 ui-types 的类型 + 虚拟组件声明
  * - @ai-builder/runtime-renderer: 适配层，直接从 ui-types 获取类型并映射到 Ant Design
  */
 
@@ -90,7 +90,7 @@ import type {
   IconProps as DSLIconProps,
   LinkProps as DSLLinkProps,
   Option as DSLOption,
-} from '@ai-builder/std-ui/components';
+} from '@qwe8652591/std-ui/components';
 
 // React 特定的类型映射：将 DSL 的 `unknown` 类型映射到 React 的实际类型
 type Children = React.ReactNode;

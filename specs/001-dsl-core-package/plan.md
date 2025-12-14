@@ -517,7 +517,7 @@ export class OrderLogic {
 - `@ai-builder/runtime`：运行时仿真包，实现本包定义的接口
 - `@ai-builder/cli`：CLI 工具，用于读取本包的装饰器元数据
 - `@ai-builder/core`：编译器核心，解析本包的装饰器
-- `@ai-builder/eslint-plugin`：ESLint 插件，检查本包装饰器的使用规范
+- `@qwe8652591/eslint-plugin`：ESLint 插件，检查本包装饰器的使用规范
 
 **关键依赖关系**：本包必须在所有其他包之前完成，因为它定义了整个 DSL 的基础类型和接口。
 

@@ -26,7 +26,7 @@
  * ```
  */
 
-import type { PageDefinition } from '@ai-builder/jsx-runtime';
+import type { PageDefinition } from '@qwe8652591/dsl-core';
 
 // ==================== 路由配置类型（参考 React Router v6） ====================
 

@@ -11,7 +11,7 @@
  * 
  * @example
  * ```typescript
- * import { initDatabase } from '@ai-builder/jsx-runtime';
+ * import { initDatabase } from '@qwe8652591/dsl-core';
  * import initSqlJs from 'sql.js';
  * 
  * // 初始化 SQLite 数据库
@@ -28,7 +28,7 @@
 import {
   setORMAdapter,
   InMemoryORMAdapter,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 import {
   createSQLiteBrowserAdapter,
   type SQLiteBrowserAdapter,

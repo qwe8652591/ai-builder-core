@@ -17,5 +17,5 @@ export {
   type JSXElement,
   isVNode,
   isValidChild,
-} from '@ai-builder/std-ui';
+} from '@qwe8652591/std-ui';
 

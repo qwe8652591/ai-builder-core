@@ -1,5 +1,5 @@
 /**
- * @ai-builder/jsx-runtime
+ * @qwe8652591/dsl-core
  * 
  * 自定义 JSX 运行时 + DSL 定义层
  * 
@@ -10,10 +10,10 @@
  * @example
  * ```tsx
  * // DSL 定义（从 jsx-runtime）
- * import { definePage, defineEntity, Field } from '@ai-builder/jsx-runtime';
+ * import { definePage, defineEntity, Field } from '@qwe8652591/dsl-core';
  * 
  * // 运行时功能（从 dsl-runtime）
- * import { initDatabase, createDSLRouter } from '@ai-builder/dsl-runtime';
+ * import { initDatabase, createDSLRouter } from '@qwe8652591/dsl-runtime';
  * ```
  */
 
@@ -33,7 +33,7 @@ export { renderToString, vnodeToJson } from './render-to-string';
 export { traverseVNode, flattenChildren, cloneVNode, getDisplayName } from './utils';
 
 // ==================== DSL 定义层 + 核心运行时 ====================
-// 注：React 渲染器已迁移到 @ai-builder/dsl-runtime
+// 注：React 渲染器已迁移到 @qwe8652591/dsl-runtime
 
 export {
   // 响应式原语
@@ -279,6 +279,10 @@ export type {
   AdapterConfig,
   AdapterName,
 } from './adapter';
+
+// ==================== 项目配置类型 ====================
+
+export type { DSLProjectConfig } from './dsl-runtime/project-config';
 
 // ==================== 类型导出 ====================
 

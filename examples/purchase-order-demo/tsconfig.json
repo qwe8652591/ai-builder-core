@@ -5,7 +5,7 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "jsxImportSource": "@ai-builder/jsx-runtime",
+    "jsxImportSource": "@qwe8652591/dsl-core",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -17,11 +17,10 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@ai-builder/std-ui": ["../../packages/std-ui/src/index.ts"],
-      "@ai-builder/std-ui/*": ["../../packages/std-ui/src/*"],
-      "@ai-builder/jsx-runtime": ["../../packages/jsx-runtime/src/index.ts"],
-      "@ai-builder/jsx-runtime/*": ["../../packages/jsx-runtime/src/*"],
-      "@ai-builder/dsl-runtime": ["../../packages/dsl-runtime/src/index.ts"]
+      "@qwe8652591/std-ui": ["../../packages/std-ui/src/index.ts"],
+      "@qwe8652591/std-ui/*": ["../../packages/std-ui/src/*"],
+      "@qwe8652591/dsl-core": ["../../packages/dsl-core/src/index.ts"],
+      "@qwe8652591/dsl-core/*": ["../../packages/dsl-core/src/*"]
     }
   },
   "include": [

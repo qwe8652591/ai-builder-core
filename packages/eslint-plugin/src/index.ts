@@ -12,7 +12,7 @@ import { noExposeInService } from './rules/no-expose-in-service';
 // ESLint 8.x 需要使用 module.exports = 
 module.exports = {
   meta: {
-    name: '@ai-builder/eslint-plugin',
+    name: '@qwe8652591/eslint-plugin',
     version: '0.1.0',
   },
   rules: {

@@ -10,7 +10,7 @@ import {
   useState, 
   useEffect, 
   useComputed,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // 路由
 import { Routes, useNavigate } from '../routes';
@@ -23,7 +23,7 @@ import {
   Space, 
   Input, 
   Select
-} from '@ai-builder/std-ui';
+} from '@qwe8652591/std-ui';
 
 // 使用 DSL 定义的服务和类型
 import { PurchaseOrderAppService } from '../services/PurchaseOrder.appservice';

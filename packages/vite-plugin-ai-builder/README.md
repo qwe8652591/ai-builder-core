@@ -1,11 +1,11 @@
-# @ai-builder/vite-plugin
+# @qwe8652591/vite-plugin
 
 Vite plugin for ai-builder DSL transformation.
 
 ## Installation
 
 ```bash
-pnpm add -D @ai-builder/vite-plugin
+pnpm add -D @qwe8652591/vite-plugin
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ pnpm add -D @ai-builder/vite-plugin
 // vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { aiBuilderPlugin } from '@ai-builder/vite-plugin';
+import { aiBuilderPlugin } from '@qwe8652591/vite-plugin';
 
 export default defineConfig({
   plugins: [
@@ -30,7 +30,7 @@ export default defineConfig({
 
 1. **Import Transformation**: Automatically replaces DSL imports with runtime renderer implementations
    - `@ai-builder/dsl/ui` → `@ai-builder/runtime-renderer/react`
-   - `@ai-builder/std-ui` → `@ai-builder/runtime-renderer/react`
+   - `@qwe8652591/std-ui` → `@ai-builder/runtime-renderer/react`
 
 2. **Code Simplification**: Simplifies `definePage` wrappers for development
 
@@ -50,7 +50,7 @@ interface AiBuilderPluginOptions {
 Input (`.view.tsx`):
 ```typescript
 import { useState } from '@ai-builder/dsl/ui';
-import { Button, Page } from '@ai-builder/std-ui';
+import { Button, Page } from '@qwe8652591/std-ui';
 
 export default definePage({ title: '订单列表' }, () => {
   const [count, setCount] = useState(0);

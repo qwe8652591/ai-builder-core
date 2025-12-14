@@ -58,7 +58,7 @@ import './pages';
  *    import './dsl';
  * 
  * 2. 使用 Metadata Store 获取所有 DSL 定义：
- *    import { metadataStore, getLayeredMetadata, getLayeredStats } from '@ai-builder/jsx-runtime';
+ *    import { metadataStore, getLayeredMetadata, getLayeredStats } from '@qwe8652591/dsl-core';
  *    
  *    // 获取所有定义
  *    const all = metadataStore.getAll();
@@ -70,7 +70,7 @@ import './pages';
  *    const stats = getLayeredStats();
  * 
  * 3. 使用 Page Registry 获取页面：
- *    import { getPageByRoute, getDefaultPage, getAllPages } from '@ai-builder/jsx-runtime';
+ *    import { getPageByRoute, getDefaultPage, getAllPages } from '@qwe8652591/dsl-core';
  *    
  *    // 根据路由获取页面
  *    const page = getPageByRoute('/orders');
@@ -82,7 +82,7 @@ import './pages';
  *    const allPages = getAllPages();
  * 
  * 4. 使用 Component Registry 获取组件：
- *    import { getComponent, getAllComponents, getComponentsByCategory } from '@ai-builder/jsx-runtime';
+ *    import { getComponent, getAllComponents, getComponentsByCategory } from '@qwe8652591/dsl-core';
  *    
  *    // 根据名称获取组件
  *    const OrderCard = getComponent('OrderCard');

@@ -15,7 +15,7 @@
  * ```
  */
 
-import { defineExtension } from '@ai-builder/jsx-runtime';
+import { defineExtension } from '@qwe8652591/dsl-core';
 import { Supplier } from '../models/Supplier.model';
 
 // ==================== 1. 定义扩展方法接口 ====================

@@ -17,7 +17,7 @@
  * ```
  */
 
-import { registerExtension } from '@ai-builder/jsx-runtime';
+import { registerExtension } from '@qwe8652591/dsl-core';
 
 // ==================== 扩展配置定义（复用于类型和注册） ====================
 
@@ -110,7 +110,7 @@ registerExtension(methodOptionsExtension);
 // ==================== 类型声明扩展（IDE 支持） ====================
 // 注：TypeScript 的 declare module 需要静态类型，无法从配置自动推断
 
-declare module '@ai-builder/jsx-runtime' {
+declare module '@qwe8652591/dsl-core' {
   interface ColumnOptions {
     displayFormat?: 'currency' | 'percent' | 'date' | 'datetime' | 'custom';
     formatter?: (value: unknown) => string;

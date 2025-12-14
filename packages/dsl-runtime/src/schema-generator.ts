@@ -9,7 +9,7 @@ import {
   getEntityDefinition, 
   getMetadataByType,
   type EntityClass 
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // ==================== 类型定义 ====================
 

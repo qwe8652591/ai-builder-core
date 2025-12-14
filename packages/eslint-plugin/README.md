@@ -1,4 +1,4 @@
-# @ai-builder/eslint-plugin
+# @qwe8652591/eslint-plugin
 
 ESLint plugin for AI Builder DSL syntax constraints.
 
@@ -7,7 +7,7 @@ ESLint plugin for AI Builder DSL syntax constraints.
 ## Installation
 
 ```bash
-pnpm add -D @ai-builder/eslint-plugin @typescript-eslint/parser
+pnpm add -D @qwe8652591/eslint-plugin @typescript-eslint/parser
 ```
 
 ## Usage

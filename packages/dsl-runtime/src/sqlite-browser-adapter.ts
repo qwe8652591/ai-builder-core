@@ -13,7 +13,7 @@
  * 
  * @example
  * ```typescript
- * import { SQLiteBrowserAdapter, setORMAdapter } from '@ai-builder/jsx-runtime';
+ * import { SQLiteBrowserAdapter, setORMAdapter } from '@qwe8652591/dsl-core';
  * 
  * // 初始化适配器
  * const adapter = new SQLiteBrowserAdapter();
@@ -55,7 +55,7 @@ import type {
   WhereCondition,
   WhereGroup,
   EntityClass,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // ==================== 类型定义 ====================
 

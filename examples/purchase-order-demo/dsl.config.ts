@@ -2,7 +2,7 @@
  * DSL 项目配置
  */
 
-import type { DSLProjectConfig } from '@ai-builder/dsl-runtime';
+import type { DSLProjectConfig } from '@qwe8652591/dsl-core';
 
 const config: Partial<DSLProjectConfig> = {
   // 数据库配置

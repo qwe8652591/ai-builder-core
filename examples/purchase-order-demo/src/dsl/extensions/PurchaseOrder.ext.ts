@@ -15,7 +15,7 @@
  * ```
  */
 
-import { defineExtension } from '@ai-builder/jsx-runtime';
+import { defineExtension } from '@qwe8652591/dsl-core';
 import { 
   PurchaseOrder, 
   PurchaseOrderItem, 

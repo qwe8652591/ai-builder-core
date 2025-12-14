@@ -9,7 +9,7 @@ import {
   Method,
   type Result,
   type PageResult,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 import { PurchaseOrderService } from './PurchaseOrder.service';
 import { PurchaseOrderRepository } from '../repositories/PurchaseOrder.repository';
 import type { 

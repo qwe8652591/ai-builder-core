@@ -16,7 +16,7 @@ import {
   FieldTypes,
   CascadeTypes,
   defineTypedEnum,
-} from '@ai-builder/jsx-runtime';
+} from '@qwe8652591/dsl-core';
 
 // ==================== 枚举定义 ====================
 

@@ -71,7 +71,7 @@ export type { VNode, VNodeProps, VNodeChild, ComponentType };
  * JSX 命名空间声明
  * 
  * 🎯 告诉 TypeScript JSX 元素的类型是 VNode
- * 当 tsconfig.json 配置 jsxImportSource: "@ai-builder/jsx-runtime" 时生效
+ * 当 tsconfig.json 配置 jsxImportSource: "@qwe8652591/dsl-core" 时生效
  */
 export namespace JSX {
   // JSX 元素类型

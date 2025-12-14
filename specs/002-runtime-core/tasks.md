@@ -146,7 +146,7 @@
 - ✅ 使用 `DecimalConstructor` 注入 Decimal 构造器
 
 #### 8. **架构约束与质量保证 (100%)** 🆕
-- ✅ **ESLint 插件** (`@ai-builder/eslint-plugin`):
+- ✅ **ESLint 插件** (`@qwe8652591/eslint-plugin`):
   - `no-async-in-domain`: 禁止 Domain 层使用 `async/await`
   - `no-this-in-domain`: 禁止 Domain 层使用 `this`
   - `model-fields-only`: Model 层只能包含字段定义

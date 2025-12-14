@@ -2,7 +2,7 @@
 
 ## 📖 概述
 
-`@ai-builder/std-ui` 提供了 19 个标准 UI 组件的接口定义。这些是"虚拟组件"，在编译时会被替换为具体的 UI 库实现（如 Element Plus 或 Ant Design）。
+`@qwe8652591/std-ui` 提供了 19 个标准 UI 组件的接口定义。这些是"虚拟组件"，在编译时会被替换为具体的 UI 库实现（如 Element Plus 或 Ant Design）。
 
 ## 🎯 核心概念
 
@@ -25,7 +25,7 @@
 所有组件都有完整的 TypeScript 类型定义：
 
 ```typescript
-import type { ButtonProps, TableProps } from '@ai-builder/std-ui';
+import type { ButtonProps, TableProps } from '@qwe8652591/std-ui';
 
 // 完整的类型提示和检查
 const buttonProps: ButtonProps = {
@@ -45,14 +45,14 @@ const buttonProps: ButtonProps = {
 pnpm add @ai-builder/dsl
 
 # 安装标准组件协议包
-pnpm add @ai-builder/std-ui
+pnpm add @qwe8652591/std-ui
 ```
 
 ### 基础示例
 
 ```tsx
 import { definePage, useState } from '@ai-builder/dsl/ui';
-import type { ButtonProps } from '@ai-builder/std-ui';
+import type { ButtonProps } from '@qwe8652591/std-ui';
 
 export default definePage({ route: '/demo', title: '演示页面' }, () => {
   const count = useState(0);
@@ -296,7 +296,7 @@ const visible = useState(false);
 #### Message - 消息提示（API 方式）
 
 ```tsx
-import { Message } from '@ai-builder/std-ui';
+import { Message } from '@qwe8652591/std-ui';
 
 // 成功消息
 Message.success('操作成功');
@@ -319,7 +319,7 @@ Message({
 #### Notification - 通知（API 方式）
 
 ```tsx
-import { Notification } from '@ai-builder/std-ui';
+import { Notification } from '@qwe8652591/std-ui';
 
 // 成功通知
 Notification.success('成功', '订单已创建');
@@ -557,7 +557,7 @@ import type {
   ButtonProps, IconProps, LinkProps,
   // 公共类型
   Size, ButtonType, Children, FormRule,
-} from '@ai-builder/std-ui';
+} from '@qwe8652591/std-ui';
 ```
 
 ## 💡 最佳实践

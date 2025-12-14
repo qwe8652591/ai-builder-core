@@ -26,7 +26,7 @@ export function aiBuilderPlugin(options: AiBuilderPluginOptions = {}): Plugin {
   // 默认的 import 映射规则
   const defaultMappings: Record<string, string> = {
     '@ai-builder/dsl/ui': '@ai-builder/runtime-renderer/react',
-    '@ai-builder/std-ui': '@ai-builder/runtime-renderer/react',
+    '@qwe8652591/std-ui': '@ai-builder/runtime-renderer/react',
   };
 
   const allMappings = { ...defaultMappings, ...importMappings };

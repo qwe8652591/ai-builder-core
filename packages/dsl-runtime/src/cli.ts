@@ -91,7 +91,7 @@ program
       const { config, files, vite, stats } = await loadDSLProject(absolutePath);
       
       // 通过 Vite 导入 metadata store（确保使用同一个模块实例）
-      const { getLayeredStats, metadataStore } = await vite.ssrLoadModule('@ai-builder/jsx-runtime') as typeof import('@ai-builder/jsx-runtime');
+      const { getLayeredStats, metadataStore } = await vite.ssrLoadModule('@qwe8652591/dsl-core') as typeof import('@qwe8652591/dsl-core');
       
       console.log(chalk.green('\n📊 Metadata Statistics:\n'));
       console.log(JSON.stringify(getLayeredStats(), null, 2));

@@ -4,8 +4,8 @@
  * 使用 defineComponent 简洁语法定义
  */
 
-import { defineComponent } from '@ai-builder/jsx-runtime';
-import { Tag } from '@ai-builder/std-ui';
+import { defineComponent } from '@qwe8652591/dsl-core';
+import { Tag } from '@qwe8652591/std-ui';
 
 /** 状态标签 Props */
 export interface StatusTagProps {
