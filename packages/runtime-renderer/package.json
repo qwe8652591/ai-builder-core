@@ -1,0 +1,48 @@
+{
+  "name": "@ai-builder/runtime-renderer",
+  "version": "0.1.0",
+  "description": "Runtime renderer for ai-builder UI DSL based on React and Ant Design",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup && pnpm build:dts",
+    "build:dts": "tsc --emitDeclarationOnly --outDir dist",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "antd": "^5.22.0",
+    "@ant-design/icons": "^5.5.1",
+    "@ai-builder/dsl": "workspace:*",
+    "@ai-builder/jsx-runtime": "workspace:*",
+    "@ai-builder/std-ui": "workspace:*",
+    "@ai-builder/ui-types": "workspace:*",
+    "decimal.js": "^10.4.3"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "sql.js": "^1.13.0",
+    "typescript": "^5.9.3",
+    "tsup": "^8.0.1"
+  }
+}
+

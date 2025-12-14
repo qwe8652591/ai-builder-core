@@ -1,0 +1,49 @@
+{
+  "name": "@ai-builder/ui-types",
+  "version": "0.1.0",
+  "description": "Shared TypeScript type definitions for AI Builder UI components and primitives",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./components": {
+      "types": "./dist/components.d.ts",
+      "import": "./dist/components.js",
+      "require": "./dist/components.cjs"
+    },
+    "./primitives": {
+      "types": "./dist/primitives.d.ts",
+      "import": "./dist/primitives.js",
+      "require": "./dist/primitives.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "typescript",
+    "types",
+    "ui",
+    "components",
+    "dsl"
+  ],
+  "author": "AI Builder Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.9.3",
+    "tsup": "^8.0.1"
+  }
+}
+

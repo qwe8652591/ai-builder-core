@@ -1,0 +1,31 @@
+{
+  "name": "@ai-builder/vite-plugin",
+  "version": "0.1.0",
+  "description": "Vite plugin for ai-builder DSL transformation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "vite": "^5.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "typescript": "^5.9.3",
+    "tsup": "^8.0.1",
+    "@types/node": "^20.0.0"
+  }
+}
+

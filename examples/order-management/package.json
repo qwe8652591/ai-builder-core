@@ -1,0 +1,22 @@
+{
+  "name": "order-management-example",
+  "version": "0.1.0",
+  "description": "示例：使用 @ai-builder/dsl 和 @ai-builder/runtime 构建订单管理系统",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/main.ts",
+    "build": "tsc",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@ai-builder/dsl": "workspace:*",
+    "@ai-builder/runtime": "workspace:*",
+    "@ai-builder/std-ui": "workspace:*",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}

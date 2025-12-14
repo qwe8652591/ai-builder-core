@@ -1,0 +1,44 @@
+{
+  "name": "@ai-builder/eslint-plugin",
+  "version": "0.1.0",
+  "description": "ESLint plugin for AI Builder DSL syntax constraints",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup && pnpm build:dts",
+    "build:dts": "tsc src/index.ts --declaration --emitDeclarationOnly --outDir dist --skipLibCheck --moduleResolution bundler --module esnext --target es2022",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "ai-builder",
+    "dsl"
+  ],
+  "dependencies": {
+    "@typescript-eslint/utils": "^6.21.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^6.21.0",
+    "@types/node": "^20.19.25",
+    "eslint": "^8.57.0",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^1.6.1"
+  },
+  "peerDependencies": {
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
+
+
+
+
+
+

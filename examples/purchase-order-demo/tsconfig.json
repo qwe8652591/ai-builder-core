@@ -1,0 +1,42 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@ai-builder/jsx-runtime",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@ai-builder/dsl": ["../../packages/dsl/src/index.ts"],
+      "@ai-builder/dsl/*": ["../../packages/dsl/src/*"],
+      "@ai-builder/std-ui": ["../../packages/std-ui/src/index.ts"],
+      "@ai-builder/ui-types": ["../../packages/ui-types/src/index.ts"],
+      "@ai-builder/jsx-runtime": ["../../packages/jsx-runtime/src/index.ts"],
+      "@ai-builder/jsx-runtime/*": ["../../packages/jsx-runtime/src/*"],
+      "@ai-builder/runtime-renderer/*": ["../../packages/runtime-renderer/dist/*/index.d.ts"]
+    }
+  },
+  "include": [
+    "src",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}
+
+
+
+

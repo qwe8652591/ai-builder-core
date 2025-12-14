@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "useDefineForClassFields": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@ai-builder/dsl": ["../../packages/dsl/src/index.ts"],
+      "@ai-builder/dsl/*": ["../../packages/dsl/src/*"],
+      "@ai-builder/std-ui": ["../../packages/std-ui/src/index.ts"],
+      "@ai-builder/std-ui/*": ["../../packages/std-ui/src/*"],
+      "@ai-builder/runtime": ["../../packages/runtime/src/index.ts"],
+      "@ai-builder/runtime/*": ["../../packages/runtime/src/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+
+
