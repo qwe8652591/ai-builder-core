@@ -10,6 +10,16 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/types/components.d.ts",
+      "import": "./dist/types/components.mjs",
+      "require": "./dist/types/components.js"
+    },
+    "./primitives": {
+      "types": "./dist/types/primitives.d.ts",
+      "import": "./dist/types/primitives.mjs",
+      "require": "./dist/types/primitives.js"
     }
   },
   "sideEffects": false,
@@ -35,17 +45,12 @@
   ],
   "author": "AI Builder Team",
   "license": "MIT",
-  "dependencies": {
-    "@ai-builder/ui-types": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0",
     "@types/node": "^20.0.0"
-  },
-  "peerDependencies": {
-    "@ai-builder/dsl": "workspace:*"
   },
   "publishConfig": {
     "access": "public"

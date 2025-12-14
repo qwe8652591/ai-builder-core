@@ -42,7 +42,7 @@ import type {
  * - 在运行时被 react-bridge 映射到真实的 UI 组件
  * - 完全框架无关，不依赖 React
  */
-import type { JSXElement } from '@ai-builder/ui-types';
+import type { JSXElement } from './types/primitives';
 
 // ============================================
 // 布局组件

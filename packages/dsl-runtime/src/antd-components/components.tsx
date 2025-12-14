@@ -90,7 +90,7 @@ import type {
   IconProps as DSLIconProps,
   LinkProps as DSLLinkProps,
   Option as DSLOption,
-} from '@ai-builder/ui-types/components';
+} from '@ai-builder/std-ui/components';
 
 // React 特定的类型映射：将 DSL 的 `unknown` 类型映射到 React 的实际类型
 type Children = React.ReactNode;

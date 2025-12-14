@@ -2,14 +2,6 @@
  * Ant Design 5 适配器
  * 
  * 提供预配置的 Ant Design 组件映射，用于 DSL 到 React 的转换
- * 
- * 使用方式：
- * ```typescript
- * import { registerAntdAdapter } from '@ai-builder/runtime-renderer';
- * 
- * // 一行代码完成所有组件注册
- * registerAntdAdapter();
- * ```
  */
 
 import type { AdapterConfig, ComponentMapping } from '@ai-builder/jsx-runtime';

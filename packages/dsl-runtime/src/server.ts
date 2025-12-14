@@ -83,9 +83,7 @@ import {
   vnodeToReactElement,
 } from '@ai-builder/jsx-runtime';
 
-import { 
-  getAntdComponentMapping,
-} from '@ai-builder/runtime-renderer';
+import { getAntdComponentMapping } from '@dsl-runtime/antd-components/adapter';
 
 // 🎯 动态导入 DSL 定义（必须先导入，让装饰器注册 metadata）
 import '${dslPath}';

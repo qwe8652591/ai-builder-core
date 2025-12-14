@@ -2,14 +2,12 @@
  * 标准 UI 组件协议主导出文件
  * 
  * 导出所有标准 UI 组件的接口定义和公共类型。
- * 这些类型来自 @ai-builder/ui-types，作为单一数据源 (SSOT)。
  * 
  * @packageDocumentation
  */
 
-// 从 ui-types 重新导出所有类型（单一数据源）
+// 组件 Props 类型（从本地 types 目录导出）
 export type {
-  // 组件 Props 类型
   PageProps,
   CardProps,
   RowProps,
@@ -41,7 +39,29 @@ export type {
   IconProps,
   LinkProps,
   Option,
-} from '@ai-builder/ui-types/components';
+} from './types/components';
+
+// VNode 和原语类型
+export type {
+  VNode,
+  VNodeChild,
+  VNodeProps,
+  ComponentType,
+  JSXElement,
+  ReactiveState,
+  ComputedState,
+  EffectCallback,
+  CleanupFunction,
+  DependencyList,
+  WatchOptions,
+} from './types/primitives';
+
+// VNode 相关的值和函数
+export {
+  VNODE_TYPE,
+  isVNode,
+  isValidChild,
+} from './types/primitives';
 
 // 公共类型（为了向后兼容，保留本地定义）
 export type {

@@ -66,7 +66,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@ai-builder/ui-types": "workspace:*",
+    "@ai-builder/std-ui": "workspace:*",
     "reflect-metadata": "^0.2.2"
   }
 }

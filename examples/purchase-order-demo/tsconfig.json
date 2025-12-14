@@ -21,7 +21,6 @@
       "@ai-builder/dsl": ["../../packages/dsl/src/index.ts"],
       "@ai-builder/dsl/*": ["../../packages/dsl/src/*"],
       "@ai-builder/std-ui": ["../../packages/std-ui/src/index.ts"],
-      "@ai-builder/ui-types": ["../../packages/ui-types/src/index.ts"],
       "@ai-builder/jsx-runtime": ["../../packages/jsx-runtime/src/index.ts"],
       "@ai-builder/jsx-runtime/*": ["../../packages/jsx-runtime/src/*"],
       "@ai-builder/runtime-renderer/*": ["../../packages/runtime-renderer/dist/*/index.d.ts"]

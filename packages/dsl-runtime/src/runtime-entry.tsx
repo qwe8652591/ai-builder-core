@@ -38,9 +38,7 @@ import {
   vnodeToReactElement,
 } from './react-bridge';
 
-import { 
-  getAntdComponentMapping,
-} from '@ai-builder/runtime-renderer';
+import { getAntdComponentMapping } from './antd-components/adapter';
 
 // 🎯 数据库配置从全局变量获取（由虚拟入口模块设置）
 declare global {
