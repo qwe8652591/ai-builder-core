@@ -61,12 +61,35 @@ export {
   type TableColumn,
 } from './schema-generator.js';
 
+// ==================== React 渲染器 ====================
+export { 
+  vnodeToReact, 
+  registerAntdComponents,
+  DSLPageRenderer as LegacyDSLPageRenderer,
+  createDSLApp,
+} from './react-renderer.js';
+
+export {
+  // 组件
+  DSLPageRenderer,
+  DSLAppRenderer,
+  // 路由组件
+  RouterProvider,
+  createDSLRouter,
+  // Hook 桥接
+  useState as useBridgedState,
+  useEffect as useBridgedEffect,
+  useComputed as useBridgedComputed,
+  // VNode 转换
+  vnodeToReactElement,
+  registerComponents,
+} from './react-bridge.js';
+
 // ==================== 重新导出核心运行时（从 jsx-runtime） ====================
 // 这些也可以直接从 @ai-builder/jsx-runtime 导入
 
 export {
   // 路由
-  createDSLRouter,
   useNavigate,
   useParams,
   useLocation,
@@ -98,8 +121,6 @@ export {
   defineApp,
   getMergedAppConfig,
   // 元数据
-  registerComponents,
-  vnodeToReactElement,
   getMetadataByType,
   getLayeredStats,
 } from '@ai-builder/jsx-runtime';

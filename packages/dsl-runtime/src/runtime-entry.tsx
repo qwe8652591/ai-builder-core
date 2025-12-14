@@ -26,15 +26,17 @@ import {
 import zhCN from 'antd/locale/zh_CN';
 
 import { 
-  createDSLRouter,
-  registerComponents,
   getMenuRoutes,
   useNavigate,
   getMergedAppConfig,
-  vnodeToReactElement,
 } from '@ai-builder/jsx-runtime';
 
 import { initDatabase } from './database';
+import { 
+  createDSLRouter,
+  registerComponents,
+  vnodeToReactElement,
+} from './react-bridge';
 
 import { 
   getAntdComponentMapping,

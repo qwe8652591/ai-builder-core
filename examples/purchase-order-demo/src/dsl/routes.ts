@@ -19,8 +19,6 @@ export {
   useQuery, 
   useLocation,
   createRouter,
-  RouterProvider,
-  createDSLRouter,
   type RouteConfig,
 } from '@ai-builder/jsx-runtime';
 

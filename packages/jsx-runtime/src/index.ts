@@ -32,28 +32,8 @@ export { jsx, jsxs, jsxDEV } from './jsx-runtime';
 export { renderToString, vnodeToJson } from './render-to-string';
 export { traverseVNode, flattenChildren, cloneVNode, getDisplayName } from './utils';
 
-// ==================== React 渲染器 ====================
-
-export { 
-  vnodeToReact, 
-  registerAntdComponents,
-  DSLPageRenderer as LegacyDSLPageRenderer,
-  createDSLApp,
-} from './react-renderer';
-
-export {
-  DSLPageRenderer,
-  DSLAppRenderer,
-  RouterProvider,
-  createDSLRouter,
-  useState as useBridgedState,
-  useEffect as useBridgedEffect,
-  useComputed as useBridgedComputed,
-  vnodeToReactElement,
-  registerComponents,
-} from './react-bridge';
-
 // ==================== DSL 定义层 + 核心运行时 ====================
+// 注：React 渲染器已迁移到 @ai-builder/dsl-runtime
 
 export {
   // 响应式原语

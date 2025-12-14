@@ -9,10 +9,8 @@
     "inspect": "dsl-runtime inspect"
   },
   "devDependencies": {
-    "@ai-builder/dsl": "workspace:*",
     "@ai-builder/jsx-runtime": "workspace:*",
     "@ai-builder/std-ui": "workspace:*",
-    "@ai-builder/dsl-runtime": "workspace:*",
     "typescript": "^5.3.0"
   }
 }

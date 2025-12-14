@@ -11,13 +11,23 @@
  */
 
 import React from 'react';
-import type { VNode, VNodeChild } from './types';
-import { Fragment } from './create-element';
-import type { PageDefinition, ComponentDefinition } from './dsl-runtime/dsl-engine';
-import { getPageByRoute, getDefaultPage, getAllComponents } from './dsl-runtime/dsl-engine';
-import { setHookImplementation, type HookImplementation, type StateSetter } from './dsl-runtime/state';
-import { setEffectHookImplementation, type EffectHookImplementation } from './dsl-runtime/lifecycle';
+import type { VNode, VNodeChild } from '@ai-builder/jsx-runtime';
 import { 
+  Fragment,
+  // DSL 引擎
+  type PageDefinition, 
+  type ComponentDefinition,
+  getPageByRoute, 
+  getDefaultPage, 
+  getAllComponents,
+  // 状态
+  setHookImplementation, 
+  type HookImplementation, 
+  type StateSetter,
+  // 生命周期
+  setEffectHookImplementation, 
+  type EffectHookImplementation,
+  // 路由
   getRouterAdapter, 
   HashRouterAdapter,
   createRouter,
@@ -25,7 +35,7 @@ import {
   getRouter,
   type Router,
   type RouteConfig,
-} from './dsl-runtime/router';
+} from '@ai-builder/jsx-runtime';
 
 // ==================== 类型定义 ====================
 
