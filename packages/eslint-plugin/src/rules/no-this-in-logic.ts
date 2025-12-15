@@ -6,21 +6,21 @@ const createRule = ESLintUtils.RuleCreator(
 );
 
 /**
- * 规则: no-this-in-domain
+ * 规则: no-this-in-logic
  * 
- * 禁止在 .domain.ts 文件中使用 this
+ * 禁止在 .logic.ts 文件中使用 this
  * 确保所有方法都是静态方法，可以直接调用
  */
-export const noThisInDomain = createRule({
-  name: 'no-this-in-domain',
+export const noThisInLogic = createRule({
+  name: 'no-this-in-logic',
   meta: {
     type: 'problem',
     docs: {
-      description: '禁止在 .domain.ts 文件中使用 this',
+      description: '禁止在 .logic.ts 文件中使用 this',
       recommended: 'recommended',
     },
     messages: {
-      noThis: '🛑 Domain 层不能使用 this，所有方法应该是静态方法',
+      noThis: '🛑 Logic 层不能使用 this，所有方法应该是静态方法',
     },
     schema: [],
   },
@@ -28,8 +28,8 @@ export const noThisInDomain = createRule({
   create(context) {
     const filename = context.getFilename();
     
-    // 只检查 .domain.ts 文件
-    if (!filename.endsWith('.domain.ts')) {
+    // 只检查 .logic.ts 文件
+    if (!filename.endsWith('.logic.ts')) {
       return {};
     }
 
@@ -43,4 +43,3 @@ export const noThisInDomain = createRule({
     };
   },
 });
-

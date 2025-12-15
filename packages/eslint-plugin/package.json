@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/eslint-plugin",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "ESLint plugin for AI Builder DSL syntax constraints",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -34,7 +34,16 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qwe8652591/ai-builder-core.git",
+    "directory": "packages/eslint-plugin"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  }
 }
 
 

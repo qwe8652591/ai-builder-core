@@ -11,10 +11,11 @@ const createRule = ESLintUtils.RuleCreator(
  * 根据文件类型限制跨层引用
  * 
  * 分层引用约束矩阵：
- * - .model.ts: 只能引用同层 .model.ts，禁止引用 domain/app/view
- * - .domain.ts: 可引用 .model.ts，禁止引用 app/view
- * - .app.ts: 可引用 model/domain，禁止引用 view
- * - .view.tsx: 可引用所有层
+ * - .entity.ts: 只能引用同层 .entity.ts，禁止引用 logic/app/view
+ * - .logic.ts: 可引用 .entity.ts，禁止引用 app/view
+ * - .service.ts / .repository.ts: 可引用 entity/logic/dto，禁止引用 view
+ * - .appservice.ts: 可引用 entity/logic/dto/service/repository，禁止引用 view
+ * - .page.tsx / .component.tsx / app.tsx: 可引用 entity/logic/dto/appservice，禁止引用 service/repository
  */
 export const noRestrictedImportsInLayer = createRule({
   name: 'no-restricted-imports-in-layer',
@@ -25,17 +26,20 @@ export const noRestrictedImportsInLayer = createRule({
       recommended: 'recommended',
     },
     messages: {
-      modelCantImportDomain: '🛑 Model 层不能引用 Domain 层 ({{importPath}})',
-      modelCantImportApp: '🛑 Model 层不能引用 App 层 ({{importPath}})',
-      modelCantImportView: '🛑 Model 层不能引用 View 层 ({{importPath}})',
-      domainCantImportApp: '🛑 Domain 层不能引用 App 层 ({{importPath}})',
-      domainCantImportView: '🛑 Domain 层不能引用 View 层 ({{importPath}})',
-      domainCantImportRepo: '🛑 Domain 层不能引用数据访问层 ({{importPath}})',
-      domainCantImportHttp: '🛑 Domain 层禁止进行 HTTP 请求 ({{importPath}})',
-      domainCantImportIO: '🛑 Domain 层禁止进行文件/系统操作 ({{importPath}})',
+      entityCantImportLogic: '🛑 Entity 层不能引用 Logic 层 ({{importPath}})',
+      entityCantImportDto: '🛑 Entity 层不能引用 DTO 层 ({{importPath}})',
+      entityCantImportApp: '🛑 Entity 层不能引用 App 层 ({{importPath}})',
+      entityCantImportView: '🛑 Entity 层不能引用 View 层 ({{importPath}})',
+      logicCantImportDto: '🛑 Logic 层不能引用 DTO 层 ({{importPath}})',
+      logicCantImportApp: '🛑 Logic 层不能引用 App 层 ({{importPath}})',
+      logicCantImportView: '🛑 Logic 层不能引用 View 层 ({{importPath}})',
+      logicCantImportRepo: '🛑 Logic 层不能引用数据访问层 ({{importPath}})',
+      logicCantImportHttp: '🛑 Logic 层禁止进行 HTTP 请求 ({{importPath}})',
+      logicCantImportIO: '🛑 Logic 层禁止进行文件/系统操作 ({{importPath}})',
       appCantImportView: '🛑 App 层不能引用 View 层 ({{importPath}})',
       appCantImportFrontend: '🛑 App 层不能引用前端框架 ({{importPath}})',
-      viewCantImportDAL: '🛑 View 层不能直接访问数据库 ({{importPath}})',
+      viewCantImportService: '🛑 View 层不能直接引用 Service 层，请使用 AppService ({{importPath}})',
+      viewCantImportRepository: '🛑 View 层不能直接引用 Repository 层，请使用 AppService ({{importPath}})',
     },
     schema: [],
   },
@@ -44,66 +48,84 @@ export const noRestrictedImportsInLayer = createRule({
     const filename = context.getFilename();
     
     // 判断文件类型
-    const isModelFile = filename.endsWith('.model.ts');
-    const isDomainFile = filename.endsWith('.domain.ts');
-    const isAppFile = filename.endsWith('.app.ts') || filename.endsWith('.service.ts') || filename.endsWith('.repository.ts');
-    const isViewFile = filename.endsWith('.view.tsx') || filename.endsWith('.view.ts');
+    const isEntityFile = filename.endsWith('.entity.ts');
+    const isLogicFile = filename.endsWith('.logic.ts');
+    // Service/Repository 层（不包括 appservice）
+    const isServiceFile = filename.endsWith('.service.ts') && !filename.endsWith('.appservice.ts');
+    const isRepositoryFile = filename.endsWith('.repository.ts');
+    const isAppServiceFile = filename.endsWith('.appservice.ts');
+    // View 层：page.tsx, component.tsx, app.tsx
+    const isViewFile = filename.endsWith('.page.tsx') || 
+                       filename.endsWith('.component.tsx') || 
+                       (filename.endsWith('app.tsx') && !filename.includes('node_modules'));
 
     return {
       ImportDeclaration(node: TSESTree.ImportDeclaration) {
         const importPath = node.source.value;
 
-        // ==================== .model.ts 约束 ====================
-        if (isModelFile) {
-          // 禁止引用 domain 层
-          if (importPath.includes('.domain')) {
+        // ==================== .entity.ts 约束 ====================
+        if (isEntityFile) {
+          // 禁止引用 logic 层
+          if (importPath.includes('.logic')) {
             context.report({
               node,
-              messageId: 'modelCantImportDomain',
+              messageId: 'entityCantImportLogic',
+              data: { importPath },
+            });
+          }
+          // 禁止引用 dto 层
+          if (importPath.includes('.dto')) {
+            context.report({
+              node,
+              messageId: 'entityCantImportDto',
               data: { importPath },
             });
           }
           // 禁止引用 app 层
-          if (importPath.includes('.app') || importPath.includes('.service') || importPath.includes('.repository')) {
+          if (importPath.includes('.appservice') || 
+              (importPath.includes('.service') && !importPath.includes('.appservice')) || 
+              importPath.includes('.repository')) {
             context.report({
               node,
-              messageId: 'modelCantImportApp',
+              messageId: 'entityCantImportApp',
               data: { importPath },
             });
           }
           // 禁止引用 view 层
-          if (importPath.includes('.view')) {
+          if (importPath.includes('.page') || importPath.includes('.component')) {
             context.report({
               node,
-              messageId: 'modelCantImportView',
+              messageId: 'entityCantImportView',
               data: { importPath },
             });
           }
         }
 
-        // ==================== .domain.ts 约束 ====================
-        if (isDomainFile) {
-          // 禁止引用 app 层
-          if (importPath.includes('.app') || importPath.includes('.service') || importPath.includes('.repository')) {
+        // ==================== .logic.ts 约束 ====================
+        if (isLogicFile) {
+          // 禁止引用 dto 层
+          if (importPath.includes('.dto')) {
             context.report({
               node,
-              messageId: 'domainCantImportApp',
+              messageId: 'logicCantImportDto',
+              data: { importPath },
+            });
+          }
+          // 禁止引用 app 层
+          if (importPath.includes('.appservice') || 
+              (importPath.includes('.service') && !importPath.includes('.appservice')) || 
+              importPath.includes('.repository')) {
+            context.report({
+              node,
+              messageId: 'logicCantImportApp',
               data: { importPath },
             });
           }
           // 禁止引用 view 层
-          if (importPath.includes('.view')) {
+          if (importPath.includes('.page') || importPath.includes('.component')) {
             context.report({
               node,
-              messageId: 'domainCantImportView',
-              data: { importPath },
-            });
-          }
-          // 禁止引用数据访问层
-          if (importPath.includes('/dal/') || importPath.includes('/repo/') || importPath.includes('/mapper/')) {
-            context.report({
-              node,
-              messageId: 'domainCantImportRepo',
+              messageId: 'logicCantImportView',
               data: { importPath },
             });
           }
@@ -111,7 +133,7 @@ export const noRestrictedImportsInLayer = createRule({
           if (importPath === 'axios' || importPath === 'node-fetch' || importPath === 'got') {
             context.report({
               node,
-              messageId: 'domainCantImportHttp',
+              messageId: 'logicCantImportHttp',
               data: { importPath },
             });
           }
@@ -119,16 +141,16 @@ export const noRestrictedImportsInLayer = createRule({
           if (importPath === 'fs' || importPath === 'path' || importPath === 'child_process') {
             context.report({
               node,
-              messageId: 'domainCantImportIO',
+              messageId: 'logicCantImportIO',
               data: { importPath },
             });
           }
         }
 
-        // ==================== .app.ts / .service.ts 约束 ====================
-        if (isAppFile) {
+        // ==================== .service.ts / .repository.ts / .appservice.ts 约束 ====================
+        if (isServiceFile || isRepositoryFile || isAppServiceFile) {
           // 禁止引用 view 层
-          if (importPath.includes('.view')) {
+          if (importPath.includes('.page') || importPath.includes('.component')) {
             context.report({
               node,
               messageId: 'appCantImportView',
@@ -145,13 +167,21 @@ export const noRestrictedImportsInLayer = createRule({
           }
         }
 
-        // ==================== .view.tsx 约束 ====================
+        // ==================== .page.tsx / .component.tsx / app.tsx 约束 ====================
         if (isViewFile) {
-          // 禁止直接访问数据库
-          if (importPath.includes('/dal/') || importPath.includes('/repo/') || importPath.includes('/mapper/')) {
+          // 禁止直接引用 Service 层（应通过 AppService）
+          if (importPath.includes('.service') && !importPath.includes('.appservice')) {
             context.report({
               node,
-              messageId: 'viewCantImportDAL',
+              messageId: 'viewCantImportService',
+              data: { importPath },
+            });
+          }
+          // 禁止直接引用 Repository 层
+          if (importPath.includes('.repository')) {
+            context.report({
+              node,
+              messageId: 'viewCantImportRepository',
               data: { importPath },
             });
           }
@@ -160,4 +190,3 @@ export const noRestrictedImportsInLayer = createRule({
     };
   },
 });
-

@@ -6,21 +6,21 @@ const createRule = ESLintUtils.RuleCreator(
 );
 
 /**
- * 规则: no-async-in-domain
+ * 规则: no-async-in-logic
  * 
- * 禁止在 .domain.ts 文件中使用 async/await
- * 确保领域逻辑是纯同步的，可以同构执行
+ * 禁止在 .logic.ts 文件中使用 async/await
+ * 确保业务逻辑是纯同步的，可以同构执行
  */
-export const noAsyncInDomain = createRule({
-  name: 'no-async-in-domain',
+export const noAsyncInLogic = createRule({
+  name: 'no-async-in-logic',
   meta: {
     type: 'problem',
     docs: {
-      description: '禁止在 .domain.ts 文件中使用 async/await',
+      description: '禁止在 .logic.ts 文件中使用 async/await',
       recommended: 'recommended',
     },
     messages: {
-      noAsync: '🛑 Domain 层不能使用 async/await，领域逻辑必须是纯同步的以支持前后端同构执行',
+      noAsync: '🛑 Logic 层不能使用 async/await，业务逻辑必须是纯同步的以支持前后端同构执行',
     },
     schema: [],
   },
@@ -28,8 +28,8 @@ export const noAsyncInDomain = createRule({
   create(context) {
     const filename = context.getFilename();
     
-    // 只检查 .domain.ts 文件
-    if (!filename.endsWith('.domain.ts')) {
+    // 只检查 .logic.ts 文件
+    if (!filename.endsWith('.logic.ts')) {
       return {};
     }
 
@@ -72,4 +72,3 @@ export const noAsyncInDomain = createRule({
     };
   },
 });
-

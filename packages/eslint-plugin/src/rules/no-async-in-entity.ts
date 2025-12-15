@@ -6,21 +6,21 @@ const createRule = ESLintUtils.RuleCreator(
 );
 
 /**
- * 规则: no-async-in-model
+ * 规则: no-async-in-entity
  * 
- * 禁止在 .model.ts 文件中使用 async/await
- * Model 文件只能包含数据定义，不能有异步操作
+ * 禁止在 .entity.ts 文件中使用 async/await
+ * Entity 文件只能包含数据定义，不能有异步操作
  */
-export const noAsyncInModel = createRule({
-  name: 'no-async-in-model',
+export const noAsyncInEntity = createRule({
+  name: 'no-async-in-entity',
   meta: {
     type: 'problem',
     docs: {
-      description: '禁止在 .model.ts 文件中使用 async/await',
+      description: '禁止在 .entity.ts 文件中使用 async/await',
       recommended: 'recommended',
     },
     messages: {
-      noAsync: '🛑 Model 层不能使用 async/await，Model 只能是纯数据定义',
+      noAsync: '🛑 Entity 层不能使用 async/await，Entity 只能是纯数据定义',
     },
     schema: [],
   },
@@ -28,8 +28,8 @@ export const noAsyncInModel = createRule({
   create(context) {
     const filename = context.getFilename();
     
-    // 只检查 .model.ts 文件
-    if (!filename.endsWith('.model.ts')) {
+    // 只检查 .entity.ts 文件
+    if (!filename.endsWith('.entity.ts')) {
       return {};
     }
 
@@ -67,4 +67,3 @@ export const noAsyncInModel = createRule({
     };
   },
 });
-

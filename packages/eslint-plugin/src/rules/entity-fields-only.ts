@@ -6,21 +6,21 @@ const createRule = ESLintUtils.RuleCreator(
 );
 
 /**
- * 规则: model-fields-only
+ * 规则: entity-fields-only
  * 
- * 禁止在 .model.ts 文件中定义方法
- * Model 文件只能包含字段定义
+ * 禁止在 .entity.ts 文件中定义方法
+ * Entity 文件只能包含字段定义
  */
-export const modelFieldsOnly = createRule({
-  name: 'model-fields-only',
+export const entityFieldsOnly = createRule({
+  name: 'entity-fields-only',
   meta: {
     type: 'problem',
     docs: {
-      description: '禁止在 .model.ts 文件中定义方法',
+      description: '禁止在 .entity.ts 文件中定义方法',
       recommended: 'recommended',
     },
     messages: {
-      noMethods: '🛑 Model 层只能定义字段，不能包含方法。方法应该放在 .domain.ts 或 .app.ts 中',
+      noMethods: '🛑 Entity 层只能定义字段，不能包含方法。方法应该放在 .logic.ts 或 .service.ts 中',
     },
     schema: [],
   },
@@ -28,8 +28,8 @@ export const modelFieldsOnly = createRule({
   create(context) {
     const filename = context.getFilename();
     
-    // 只检查 .model.ts 文件
-    if (!filename.endsWith('.model.ts')) {
+    // 只检查 .entity.ts 文件
+    if (!filename.endsWith('.entity.ts')) {
       return {};
     }
 
@@ -49,4 +49,3 @@ export const modelFieldsOnly = createRule({
     };
   },
 });
-
