@@ -80,6 +80,7 @@ export function generateTableSchema(entityClass: EntityClass<unknown>): TableSch
       relation?: string;
       target?: () => EntityClass<unknown>;
       embedded?: boolean;
+      cascade?: string[];
     }>;
   };
   
@@ -98,7 +99,15 @@ export function generateTableSchema(entityClass: EntityClass<unknown>): TableSch
     const sqlType = getSQLiteType(fieldDef);
     const isPrimaryKey = fieldDef.primaryKey === true;
     const isRequired = fieldDef.required === true || isPrimaryKey;
-    const isJson = fieldDef.type === FieldTypes.COMPOSITION;
+    
+    // 判断是否为 JSON 类型：
+    // 1. 显式的 COMPOSITION 类型
+    // 2. @Embedded 装饰的嵌入对象
+    // 3. 有 relation 且是 embedded 的字段
+    const isJson = fieldDef.type === FieldTypes.COMPOSITION || 
+                   fieldDef.embedded === true ||
+                   (fieldDef.relation === 'embedded');
+    
     const isDate = fieldDef.type === FieldTypes.DATE || fieldDef.type === FieldTypes.DATETIME;
     
     columns.push({
@@ -270,5 +279,55 @@ export function getAllEntityTableConfigs(): Array<{
     entityClass: cls,
     config: getEntityTableConfig(cls),
   }));
+}
+
+// ==================== 嵌入对象工具 ====================
+
+/**
+ * 获取实体的嵌入字段信息
+ * 
+ * @example
+ * ```typescript
+ * const embeddedFields = getEmbeddedFields(PurchaseOrder);
+ * // { supplier: { target: SupplierInfo, ... }, items: { target: PurchaseOrderItem, ... } }
+ * ```
+ */
+export function getEmbeddedFields(entityClass: EntityClass<unknown>): Record<string, {
+  fieldName: string;
+  target: () => EntityClass<unknown>;
+  isArray: boolean;
+}> {
+  const metadata = getEntityDefinition(entityClass) as {
+    fields: Record<string, {
+      type: string;
+      relation?: string;
+      target?: () => EntityClass<unknown>;
+      embedded?: boolean;
+    }>;
+  };
+
+  if (!metadata) {
+    return {};
+  }
+
+  const embeddedFields: Record<string, {
+    fieldName: string;
+    target: () => EntityClass<unknown>;
+    isArray: boolean;
+  }> = {};
+
+  for (const [fieldName, fieldDef] of Object.entries(metadata.fields)) {
+    if (fieldDef.embedded === true || fieldDef.relation === 'embedded') {
+      if (fieldDef.target) {
+        embeddedFields[fieldName] = {
+          fieldName,
+          target: fieldDef.target,
+          isArray: fieldDef.relation === 'oneToMany',
+        };
+      }
+    }
+  }
+
+  return embeddedFields;
 }
 

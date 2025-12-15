@@ -337,9 +337,9 @@ export interface ReferenceDefinition {
 // ============================================================================
 
 /**
- * 定义值对象
+ * 定义嵌入对象
  */
-export interface ValueObjectConfig {
+export interface EmbeddableConfig {
   name: string;
   comment?: string;
   fields: Record<string, FieldConfig>;

@@ -6,6 +6,7 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
 import dayjs from 'dayjs';
+import { vnodeToReactElement } from '../react-bridge';
 // Ant Design DatePicker 需要这些 dayjs 插件
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
@@ -487,8 +488,17 @@ export const Table = <T extends Record<string, unknown> = Record<string, unknown
     sorter: col.sortable,
     filters: col.filters,
     // formatter 签名: (value, record, index) => ReactNode
+    // 🎯 将 DSL 的 VNode 转换为 React 元素
     render: col.formatter 
-      ? (value: unknown, record: T, index: number) => col.formatter(value, record, index)
+      ? (value: unknown, record: T, index: number) => {
+          const result = col.formatter(value, record, index);
+          // 如果返回的是 VNode（对象且有 type 属性），需要转换
+          if (result && typeof result === 'object' && 'type' in result) {
+            return vnodeToReactElement(result);
+          }
+          // 如果是原始值或已经是 React 元素，直接返回
+          return result;
+        }
       : col.render,
   }));
 

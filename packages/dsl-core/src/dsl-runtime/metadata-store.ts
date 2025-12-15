@@ -30,8 +30,8 @@ export type DSLLayer = 'domain' | 'application' | 'presentation' | 'infrastructu
 
 /** DSL 子层级 */
 export type DSLSubLayer = 
-  | 'model'      // 领域模型（Entity, ValueObject, Enum）
-  | 'domain'     // 领域规则（Rule, DomainLogic）
+  | 'model'      // 领域模型（Entity, Embeddable, Enum）
+  | 'domain'     // 领域规则（Rule, Logic）
   | 'repository' // 数据访问
   | 'service'    // 内部服务
   | 'dto'        // 数据传输对象

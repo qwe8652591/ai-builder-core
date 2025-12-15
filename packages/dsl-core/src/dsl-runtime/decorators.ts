@@ -150,9 +150,20 @@ export function Entity(tableOrOptions?: string | EntityOptions): ClassDecorator 
 }
 
 /**
- * 值对象装饰器
+ * 嵌入对象装饰器
+ * 
+ * 用于定义嵌入在实体中的值对象，符合 ORM 框架命名习惯（如 JPA @Embeddable）
+ * 
+ * @example
+ * ```typescript
+ * @Embeddable({ comment: '地址信息' })
+ * export class Address {
+ *   @Column({ type: FieldTypes.STRING, label: '街道' })
+ *   street!: string;
+ * }
+ * ```
  */
-export function ValueObject(options?: { comment?: string }): ClassDecorator {
+export function Embeddable(options?: { comment?: string }): ClassDecorator {
   return function (target: Function) {
     const columns = Reflect.getMetadata(COLUMN_METADATA_KEY, target.prototype) || {};
     
@@ -167,18 +178,18 @@ export function ValueObject(options?: { comment?: string }): ClassDecorator {
       };
     }
     
-    const valueObjectDefinition = {
+    const embeddableDefinition = {
       name: target.name,
       comment: options?.comment,
       fields,
-      __type: 'valueObject' as const,
+      __type: 'embeddable' as const,
       __class: target,
     };
     
-    Reflect.defineMetadata(VALUE_OBJECT_METADATA_KEY, valueObjectDefinition, target);
-    registerMetadata(valueObjectDefinition);
+    Reflect.defineMetadata(VALUE_OBJECT_METADATA_KEY, embeddableDefinition, target);
+    registerMetadata(embeddableDefinition);
     
-    console.log(`[Decorator] 已注册值对象: ${target.name}`);
+    console.log(`[Decorator] 已注册嵌入对象: ${target.name}`);
   };
 }
 
@@ -564,10 +575,38 @@ export function OneToMany(target: () => new (...args: unknown[]) => unknown, cas
 }
 
 /**
- * 一对一关系装饰器（嵌入式）
+ * 一对一关系装饰器
  */
-export function OneToOne(target: () => new (...args: unknown[]) => unknown, embedded = true): PropertyDecorator {
-  return Relation({ type: RelationTypes.ONE_TO_ONE, target, embedded });
+export function OneToOne(target: () => new (...args: unknown[]) => unknown, cascade?: CascadeType[]): PropertyDecorator {
+  return Relation({ type: RelationTypes.ONE_TO_ONE, target, cascade });
+}
+
+/**
+ * 嵌入装饰器
+ * 
+ * 用于将 @Embeddable 标记的类嵌入到实体中
+ * 
+ * @example
+ * ```typescript
+ * @Entity({ table: 'orders' })
+ * class Order {
+ *   @Embedded(() => Address)
+ *   shippingAddress!: Address;
+ * }
+ * ```
+ */
+export function Embedded(target: () => new (...args: unknown[]) => unknown): PropertyDecorator {
+  return function (targetProto: Object, propertyKey: string | symbol) {
+    const relations = Reflect.getMetadata(RELATION_METADATA_KEY, targetProto) || {};
+    
+    relations[propertyKey as string] = {
+      type: 'embedded',
+      target,
+      embedded: true,
+    };
+    
+    Reflect.defineMetadata(RELATION_METADATA_KEY, relations, targetProto);
+  };
 }
 
 // ==================== 工具函数 ====================
@@ -580,9 +619,9 @@ export function getEntityDefinition(target: Function): unknown {
 }
 
 /**
- * 获取值对象定义
+ * 获取嵌入对象定义
  */
-export function getValueObjectDefinition(target: Function): unknown {
+export function getEmbeddableDefinition(target: Function): unknown {
   return Reflect.getMetadata(VALUE_OBJECT_METADATA_KEY, target);
 }
 
@@ -622,21 +661,23 @@ export interface RuleOptions {
   message?: string;
 }
 
-/** 领域逻辑配置 */
-export interface DomainLogicOptions {
-  /** 领域名称（可选，默认使用类名） */
+/** 业务逻辑配置 */
+export interface LogicOptions {
+  /** 逻辑名称（可选，默认使用类名） */
   name?: string;
   /** 描述 */
   description?: string;
 }
 
 /**
- * 领域逻辑装饰器
+ * 业务逻辑装饰器
+ * 
+ * 用于定义业务逻辑类，配合 *.logic.ts 文件后缀使用
  * 
  * @example
  * ```typescript
- * @DomainLogic({ description: '采购订单领域逻辑' })
- * class PurchaseOrderDomain {
+ * @Logic({ description: '采购订单业务逻辑' })
+ * class PurchaseOrderLogic {
  *   @Validation({ message: '订单编号格式错误' })
  *   static validateOrderNo(orderNo: string): boolean {
  *     return /^PO\d{8}$/.test(orderNo);
@@ -649,7 +690,7 @@ export interface DomainLogicOptions {
  * }
  * ```
  */
-export function DomainLogic(options?: DomainLogicOptions): ClassDecorator {
+export function Logic(options?: LogicOptions): ClassDecorator {
   return function (target: Function) {
     const rules = Reflect.getMetadata(RULE_METADATA_KEY, target) || {};
     
@@ -684,21 +725,21 @@ export function DomainLogic(options?: DomainLogicOptions): ClassDecorator {
       }
     }
     
-    const domainLogicDefinition = {
+    const logicDefinition = {
       name: options?.name || target.name,
       description: options?.description,
       validations,
       computations,
       checks,
       actions,
-      __type: 'domainLogic' as const,
+      __type: 'logic' as const,
       __class: target,
     };
     
-    Reflect.defineMetadata(DOMAIN_LOGIC_METADATA_KEY, domainLogicDefinition, target);
-    registerMetadata(domainLogicDefinition);
+    Reflect.defineMetadata(DOMAIN_LOGIC_METADATA_KEY, logicDefinition, target);
+    registerMetadata(logicDefinition);
     
-    console.log(`[Decorator] 已注册领域逻辑: ${target.name}`);
+    console.log(`[Decorator] 已注册业务逻辑: ${target.name}`);
   };
 }
 
@@ -757,11 +798,12 @@ function createRuleDecorator(
 }
 
 /**
- * 获取领域逻辑定义
+ * 获取业务逻辑定义
  */
-export function getDomainLogicDefinition(target: Function): unknown {
+export function getLogicDefinition(target: Function): unknown {
   return Reflect.getMetadata(DOMAIN_LOGIC_METADATA_KEY, target);
 }
+
 
 // ==================== 服务层装饰器 ====================
 

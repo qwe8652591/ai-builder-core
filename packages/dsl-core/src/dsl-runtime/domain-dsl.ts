@@ -113,10 +113,10 @@ export function defineRule<T extends RuleInput>(input: T): T & { __type: string 
   return result;
 }
 
-// ==================== DomainLogic DSL ====================
+// ==================== Logic DSL ====================
 
-/** 领域逻辑定义 */
-export interface DomainLogicDefinition {
+/** 业务逻辑定义 */
+export interface LogicDefinition {
   name: string;
   description?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -127,16 +127,18 @@ export interface DomainLogicDefinition {
   checks?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actions?: Record<string, any>;
-  __type: 'domainLogic';
+  __type: 'logic';
 }
 
 /**
- * 定义领域逻辑
+ * 定义业务逻辑
+ * 
+ * 配合 *.logic.ts 文件后缀使用
  * 
  * @example
  * ```typescript
- * export const OrderDomain = defineDomainLogic({
- *   name: 'OrderDomain',
+ * export const OrderLogic = defineLogic({
+ *   name: 'OrderLogic',
  *   validations: {
  *     validateAmount,
  *     validateItems,
@@ -156,12 +158,12 @@ export interface DomainLogicDefinition {
  * });
  * ```
  */
-export function defineDomainLogic(
-  definition: Omit<DomainLogicDefinition, '__type'>
-): DomainLogicDefinition {
-  const result: DomainLogicDefinition = {
+export function defineLogic(
+  definition: Omit<LogicDefinition, '__type'>
+): LogicDefinition {
+  const result: LogicDefinition = {
     ...definition,
-    __type: 'domainLogic',
+    __type: 'logic',
   };
   
   // 自动注册到 Metadata Store

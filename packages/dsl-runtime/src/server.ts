@@ -7,14 +7,19 @@
 import { createServer, type ViteDevServer } from 'vite';
 import path from 'path';
 import fs from 'fs';
-import { createRequire } from 'module';
+import { createRequire, Module } from 'module';
+import { fileURLToPath } from 'url';
 import type { DSLProjectConfig } from './loader.js';
 
 // 创建 require 函数用于解析模块路径
 const require = createRequire(import.meta.url);
 
+// 🎯 跨平台兼容：使用 fileURLToPath 正确处理 Windows 和 Mac/Linux 路径
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // dsl-runtime 包的根目录
-const runtimePackageDir = path.resolve(decodeURIComponent(path.dirname(new URL(import.meta.url).pathname)), '..');
+const runtimePackageDir = path.resolve(__dirname, '..');
 
 /**
  * 解析包路径（从 pnpm 的 .pnpm 目录或 workspace 中）
@@ -450,8 +455,8 @@ function generateHtmlTemplate(): string {
 export async function createDevServer(config: DSLProjectConfig): Promise<ViteDevServer> {
   const htmlTemplate = generateHtmlTemplate();
   
-  // 获取 dsl-runtime 包的路径（解码 URL 编码的中文字符）
-  const runtimePath = decodeURIComponent(path.dirname(new URL(import.meta.url).pathname));
+  // 获取 dsl-runtime 包的路径（使用跨平台兼容的方式）
+  const runtimePath = __dirname;
   
   // DSL 项目路径
   const dslPath = path.join(config.root, config.srcDir).replace(/\\/g, '/');
@@ -504,7 +509,8 @@ export async function createDevServer(config: DSLProjectConfig): Promise<ViteDev
           }
           // 解析运行时入口别名
           if (id === '@dsl-runtime/entry') {
-            return path.join(runtimePath, 'runtime-entry.tsx');
+            // runtimePath 指向 dist 目录，runtime-entry.tsx 在 src 目录
+            return path.join(runtimePath, '../src/runtime-entry.tsx');
           }
         },
         
@@ -582,8 +588,21 @@ render(routes, initSqlContent);
     },
     
     optimizeDeps: {
-      // 预构建这些依赖
-      include: ['react', 'react-dom', 'react-router-dom', 'antd', '@ant-design/icons'],
+      // 预构建这些依赖（包括 dayjs 插件，解决 ESM/CJS 兼容问题）
+      include: [
+        'react', 
+        'react-dom', 
+        'react-router-dom', 
+        'antd', 
+        '@ant-design/icons',
+        'dayjs',
+        'dayjs/plugin/weekday',
+        'dayjs/plugin/localeData',
+        'dayjs/plugin/weekOfYear',
+        'dayjs/plugin/weekYear',
+        'dayjs/plugin/advancedFormat',
+        'dayjs/plugin/customParseFormat',
+      ],
       // 排除 sql.js（从 CDN 加载）
       exclude: ['sql.js'],
       // 只扫描 DSL 目录

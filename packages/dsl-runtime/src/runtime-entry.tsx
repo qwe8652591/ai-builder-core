@@ -22,8 +22,27 @@ import {
   HomeOutlined,
   UserOutlined,
   LogoutOutlined,
+  ArrowLeftOutlined,
 } from '@ant-design/icons';
 import zhCN from 'antd/locale/zh_CN';
+
+// 从 CDN 加载 sql.js（等待已加载或动态加载）
+async function loadSqlJsFromCDN(): Promise<any> {
+  // 如果已经加载，直接返回
+  if ((window as any).initSqlJs) {
+    return (window as any).initSqlJs;
+  }
+  
+  // 等待 CDN 脚本加载完成（最多等待 10 秒）
+  for (let i = 0; i < 100; i++) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    if ((window as any).initSqlJs) {
+      return (window as any).initSqlJs;
+    }
+  }
+  
+  throw new Error('sql.js failed to load from CDN');
+}
 
 import { 
   getMenuRoutes,
@@ -119,9 +138,42 @@ function AppLayout({ children, routes }: { children: React.ReactNode; routes: an
     label: route.title,
   }));
 
-  const getPageTitle = () => {
-    const route = menuRoutes.find(r => r.path === currentPath);
-    return route?.title || appConfig.name || 'DSL App';
+  // 判断是否是详情/编辑/新建页面（需要返回按钮）
+  const getPageInfo = () => {
+    // 先检查是否是菜单路由
+    const menuRoute = menuRoutes.find(r => r.path === currentPath);
+    if (menuRoute) {
+      return { title: menuRoute.title, showBack: false, backPath: null };
+    }
+    
+    // 检查是否是订单相关页面
+    const pathWithoutQuery = currentPath.split('?')[0];
+    
+    // /orders/create -> 新建采购订单
+    if (pathWithoutQuery === '/orders/create') {
+      return { title: '新建采购订单', showBack: true, backPath: '/orders' };
+    }
+    
+    // /orders/:id 或 /orders/:id?mode=edit -> 订单详情/编辑
+    const orderDetailMatch = pathWithoutQuery.match(/^\/orders\/([^/]+)$/);
+    if (orderDetailMatch) {
+      const isEdit = currentPath.includes('mode=edit');
+      return { 
+        title: isEdit ? '编辑订单' : '订单详情', 
+        showBack: true, 
+        backPath: '/orders' 
+      };
+    }
+    
+    return { title: appConfig.name || 'DSL App', showBack: false, backPath: null };
+  };
+  
+  const pageInfo = getPageInfo();
+  
+  const handleBack = () => {
+    if (pageInfo.backPath) {
+      navigate(pageInfo.backPath);
+    }
   };
 
   const userMenuItems = [
@@ -176,8 +228,20 @@ function AppLayout({ children, routes }: { children: React.ReactNode; routes: an
           justifyContent: 'space-between',
           borderBottom: '1px solid #f0f0f0',
         }}>
-          <div style={{ fontSize: 16, fontWeight: 500 }}>
-            {getPageTitle()}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {pageInfo.showBack && (
+              <ArrowLeftOutlined 
+                onClick={handleBack}
+                style={{ 
+                  fontSize: 16, 
+                  cursor: 'pointer', 
+                  color: '#1890ff',
+                }}
+              />
+            )}
+            <span style={{ fontSize: 16, fontWeight: 500 }}>
+              {pageInfo.title}
+            </span>
           </div>
           
           <Space>
@@ -228,9 +292,12 @@ export function App({ routes, initSqlContent }: {
       try {
         const dbConfig = window.__DATABASE_CONFIG__;
         
+        // 等待 sql.js 从 CDN 加载完成
+        const initSqlJs = await loadSqlJsFromCDN();
+        
         await initDatabase({
           type: 'sqlite',
-          sqlJsModule: (window as any).initSqlJs,
+          sqlJsModule: initSqlJs,
           persistKey: dbConfig?.persistKey || 'dsl-app',
           mockDataSQL: initSqlContent,
           loadMockData: !!initSqlContent,

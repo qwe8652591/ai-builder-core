@@ -1,7 +1,7 @@
 /**
  * 模型层 DSL 定义
  * 
- * 提供统一的 DSL 语法来定义 Entity、ValueObject、Enum
+ * 提供统一的 DSL 语法来定义 Entity、Embeddable、Enum
  * 定义时自动注册到 Metadata Store
  */
 
@@ -108,7 +108,7 @@ export interface FieldDefinition {
   // 枚举字段
   enumType?: EnumDefinition;
   // 组合字段
-  target?: ValueObjectDefinition | EntityDefinition;
+  target?: EmbeddableDefinition | EntityDefinition;
   relation?: RelationType;
   embedded?: boolean;
   cascade?: CascadeType[];
@@ -160,23 +160,25 @@ export function defineEnum(definition: Omit<EnumDefinition, '__type'>): EnumDefi
   return result;
 }
 
-// ==================== ValueObject DSL ====================
+// ==================== Embeddable DSL ====================
 
-/** 值对象定义 */
-export interface ValueObjectDefinition {
+/** 嵌入对象定义 */
+export interface EmbeddableDefinition {
   name: string;
   table?: string;
   comment?: string;
   fields: FieldsDefinition;
-  __type: 'valueObject';
+  __type: 'embeddable';
 }
 
 /**
- * 定义值对象
+ * 定义嵌入对象
+ * 
+ * 符合 ORM 框架命名习惯（如 JPA @Embeddable）
  * 
  * @example
  * ```typescript
- * export const Address = defineValueObject({
+ * export const Address = defineEmbeddable({
  *   name: 'Address',
  *   fields: {
  *     street: { type: 'string', label: '街道' },
@@ -185,10 +187,10 @@ export interface ValueObjectDefinition {
  * });
  * ```
  */
-export function defineValueObject(definition: Omit<ValueObjectDefinition, '__type'>): ValueObjectDefinition {
-  const result: ValueObjectDefinition = {
+export function defineEmbeddable(definition: Omit<EmbeddableDefinition, '__type'>): EmbeddableDefinition {
+  const result: EmbeddableDefinition = {
     ...definition,
-    __type: 'valueObject',
+    __type: 'embeddable',
   };
   
   // 自动注册到 Metadata Store
@@ -244,7 +246,7 @@ export function defineEntity(definition: Omit<EntityDefinition, '__type'>): Enti
 // ==================== 工具函数 ====================
 
 /**
- * 从 Entity/ValueObject 定义生成 TypeScript 类型
+ * 从 Entity/Embeddable 定义生成 TypeScript 类型
  */
 export function getFieldTypeString(field: FieldDefinition): string {
   switch (field.type) {
@@ -273,7 +275,7 @@ export function getFieldTypeString(field: FieldDefinition): string {
 /**
  * 获取实体的所有字段名
  */
-export function getFieldNames(definition: EntityDefinition | ValueObjectDefinition): string[] {
+export function getFieldNames(definition: EntityDefinition | EmbeddableDefinition): string[] {
   return Object.keys(definition.fields);
 }
 
@@ -292,7 +294,7 @@ export function getPrimaryKeyField(definition: EntityDefinition): string | undef
 /**
  * 获取必填字段
  */
-export function getRequiredFields(definition: EntityDefinition | ValueObjectDefinition): string[] {
+export function getRequiredFields(definition: EntityDefinition | EmbeddableDefinition): string[] {
   return Object.entries(definition.fields)
     .filter(([, field]) => field.required)
     .map(([name]) => name);

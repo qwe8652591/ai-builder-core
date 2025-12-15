@@ -5,7 +5,7 @@
  * 定义时自动注册到 Metadata Store
  */
 
-import type { FieldDefinition, EntityDefinition, ValueObjectDefinition, EnumDefinition } from './model-dsl';
+import type { FieldDefinition, EntityDefinition, EmbeddableDefinition, EnumDefinition } from './model-dsl';
 import { registerMetadata } from './metadata-store';
 
 // ==================== 类型常量（推荐使用，有 IDE 自动补全）====================
@@ -164,8 +164,8 @@ export interface DTODefinition {
   name: string;
   comment?: string;
   // 继承/派生
-  base?: EntityDefinition | ValueObjectDefinition | DTODefinition;
-  extends?: EntityDefinition | ValueObjectDefinition | DTODefinition;  // 支持从实体/值对象继承
+  base?: EntityDefinition | EmbeddableDefinition | DTODefinition;
+  extends?: EntityDefinition | EmbeddableDefinition | DTODefinition;  // 支持从实体/嵌入对象继承
   pick?: string[];
   omit?: string[];
   partial?: boolean;
@@ -256,7 +256,7 @@ export function defineConstant(definition: Omit<ConstantDefinition, '__type'>): 
  * 从定义中提取字段
  */
 function extractFieldsFromDefinition(
-  def: EntityDefinition | ValueObjectDefinition | DTODefinition,
+  def: EntityDefinition | EmbeddableDefinition | DTODefinition,
   pick?: string[],
   omit?: string[],
   partial?: boolean,
