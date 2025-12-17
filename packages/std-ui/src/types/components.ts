@@ -145,6 +145,109 @@ export interface UploadProps {
   className?: string;
 }
 
+export interface CheckboxProps {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  disabled?: boolean;
+  indeterminate?: boolean;
+  onChange?: (checked: boolean) => void;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface CheckboxGroupProps {
+  value?: (string | number)[];
+  defaultValue?: (string | number)[];
+  options?: Array<{ label: string; value: string | number; disabled?: boolean }>;
+  disabled?: boolean;
+  onChange?: (checkedValues: (string | number)[]) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface RadioProps {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  disabled?: boolean;
+  value?: string | number;
+  onChange?: (checked: boolean) => void;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface RadioGroupProps {
+  value?: string | number;
+  defaultValue?: string | number;
+  options?: Array<{ label: string; value: string | number; disabled?: boolean }>;
+  disabled?: boolean;
+  optionType?: 'default' | 'button';
+  buttonStyle?: 'outline' | 'solid';
+  onChange?: (value: string | number) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface SwitchProps {
+  checked?: boolean;
+  defaultChecked?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  size?: 'default' | 'small';
+  checkedText?: string;
+  uncheckedText?: string;
+  onChange?: (checked: boolean) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface InputNumberProps {
+  value?: number;
+  defaultValue?: number;
+  min?: number;
+  max?: number;
+  step?: number;
+  precision?: number;
+  disabled?: boolean;
+  placeholder?: string;
+  controls?: boolean;
+  onChange?: (value: number | null) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface TimePickerProps {
+  value?: unknown;
+  defaultValue?: unknown;
+  format?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  use12Hours?: boolean;
+  hourStep?: number;
+  minuteStep?: number;
+  secondStep?: number;
+  onChange?: (value: unknown) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface TextareaProps {
+  value?: string;
+  defaultValue?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  maxLength?: number;
+  rows?: number;
+  autoSize?: boolean | { minRows?: number; maxRows?: number };
+  showCount?: boolean;
+  onChange?: (value: string) => void;
+  onBlur?: () => void;
+  onFocus?: () => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
 /**
  * 数据展示组件类型
  */
@@ -188,6 +291,8 @@ export interface TableProps<T = Record<string, unknown>> {
   pagination?: false | PaginationConfig;
   loading?: boolean;
   onSelectionChange?: (keys: string[], rows: T[]) => void;
+  onRowClick?: (row: T, index: number) => void;
+  onRowDblClick?: (row: T, index: number) => void;
   style?: CSSProperties;
   className?: string;
 }
@@ -213,6 +318,123 @@ export interface DescriptionsProps {
   column?: number;
   items: DescriptionItem[];
   bordered?: boolean;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface AvatarProps {
+  src?: string;
+  alt?: string;
+  icon?: Children;
+  size?: 'small' | 'default' | 'large' | number;
+  shape?: 'circle' | 'square';
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface BadgeProps {
+  count?: number;
+  dot?: boolean;
+  showZero?: boolean;
+  overflowCount?: number;
+  color?: string;
+  status?: 'success' | 'processing' | 'default' | 'error' | 'warning';
+  text?: string;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface EmptyProps {
+  image?: Children | 'default' | 'simple';
+  description?: Children;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface TooltipProps {
+  title?: Children;
+  placement?: 'top' | 'left' | 'right' | 'bottom' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+  trigger?: 'hover' | 'focus' | 'click';
+  visible?: boolean;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface TreeNode {
+  key: string;
+  title: string;
+  children?: TreeNode[];
+  disabled?: boolean;
+  selectable?: boolean;
+  checkable?: boolean;
+  isLeaf?: boolean;
+}
+
+export interface TreeProps {
+  treeData?: TreeNode[];
+  selectedKeys?: string[];
+  expandedKeys?: string[];
+  checkedKeys?: string[];
+  checkable?: boolean;
+  defaultExpandAll?: boolean;
+  showLine?: boolean;
+  onSelect?: (keys: string[], info: { node: TreeNode }) => void;
+  onExpand?: (keys: string[]) => void;
+  onCheck?: (keys: string[]) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface TimelineItem {
+  key?: string;
+  label?: Children;
+  children?: Children;
+  color?: 'blue' | 'red' | 'green' | 'gray' | string;
+  dot?: Children;
+}
+
+export interface TimelineProps {
+  items?: TimelineItem[];
+  mode?: 'left' | 'alternate' | 'right';
+  pending?: boolean | Children;
+  reverse?: boolean;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface ImageProps {
+  src?: string;
+  alt?: string;
+  width?: number | string;
+  height?: number | string;
+  preview?: boolean;
+  fallback?: string;
+  placeholder?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface ListItem {
+  key?: string;
+  title?: Children;
+  description?: Children;
+  avatar?: Children;
+  extra?: Children;
+}
+
+export interface ListProps<T = ListItem> {
+  dataSource?: T[];
+  renderItem?: (item: T, index: number) => Children;
+  header?: Children;
+  footer?: Children;
+  loading?: boolean;
+  bordered?: boolean;
+  size?: 'small' | 'default' | 'large';
+  pagination?: false | PaginationConfig;
   style?: CSSProperties;
   className?: string;
 }
@@ -252,6 +474,81 @@ export interface NotificationAPI {
   error: (config: { message: string; description?: string; duration?: number }) => void;
   warning: (config: { message: string; description?: string; duration?: number }) => void;
   info: (config: { message: string; description?: string; duration?: number }) => void;
+}
+
+export interface AlertProps {
+  type?: 'success' | 'info' | 'warning' | 'error';
+  message?: Children;
+  description?: Children;
+  closable?: boolean;
+  showIcon?: boolean;
+  banner?: boolean;
+  onClose?: () => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface DrawerProps {
+  visible?: boolean;
+  title?: Children;
+  placement?: 'top' | 'right' | 'bottom' | 'left';
+  width?: number | string;
+  height?: number | string;
+  closable?: boolean;
+  mask?: boolean;
+  maskClosable?: boolean;
+  footer?: Children;
+  onClose?: () => void;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface ProgressProps {
+  percent?: number;
+  type?: 'line' | 'circle' | 'dashboard';
+  status?: 'success' | 'exception' | 'normal' | 'active';
+  showInfo?: boolean;
+  strokeColor?: string;
+  strokeWidth?: number;
+  format?: (percent: number) => Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface PopconfirmProps {
+  title?: Children;
+  description?: Children;
+  okText?: string;
+  cancelText?: string;
+  okType?: 'primary' | 'default' | 'dashed' | 'text' | 'link';
+  placement?: 'top' | 'left' | 'right' | 'bottom' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom';
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface ResultProps {
+  status?: 'success' | 'error' | 'info' | 'warning' | '404' | '403' | '500';
+  title?: Children;
+  subTitle?: Children;
+  icon?: Children;
+  extra?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface SkeletonProps {
+  active?: boolean;
+  loading?: boolean;
+  avatar?: boolean | { size?: 'small' | 'default' | 'large'; shape?: 'circle' | 'square' };
+  title?: boolean | { width?: number | string };
+  paragraph?: boolean | { rows?: number; width?: number | string | (number | string)[] };
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
 }
 
 /**
@@ -297,6 +594,71 @@ export interface BreadcrumbItem {
 export interface BreadcrumbProps {
   items: BreadcrumbItem[];
   separator?: string | Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface StepItem {
+  title?: Children;
+  description?: Children;
+  subTitle?: Children;
+  icon?: Children;
+  status?: 'wait' | 'process' | 'finish' | 'error';
+  disabled?: boolean;
+}
+
+export interface StepsProps {
+  items?: StepItem[];
+  current?: number;
+  direction?: 'horizontal' | 'vertical';
+  type?: 'default' | 'navigation';
+  size?: 'default' | 'small';
+  status?: 'wait' | 'process' | 'finish' | 'error';
+  labelPlacement?: 'horizontal' | 'vertical';
+  onChange?: (current: number) => void;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface DropdownMenuItem {
+  key: string;
+  label: Children;
+  icon?: Children;
+  disabled?: boolean;
+  danger?: boolean;
+  type?: 'item' | 'divider';
+  children?: DropdownMenuItem[];
+}
+
+export interface DropdownProps {
+  menu?: {
+    items: DropdownMenuItem[];
+    onClick?: (info: { key: string }) => void;
+  };
+  trigger?: ('click' | 'hover' | 'contextMenu')[];
+  placement?: 'top' | 'topLeft' | 'topRight' | 'bottom' | 'bottomLeft' | 'bottomRight';
+  disabled?: boolean;
+  arrow?: boolean;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface AffixProps {
+  offsetTop?: number;
+  offsetBottom?: number;
+  target?: () => HTMLElement | Window;
+  onChange?: (affixed: boolean) => void;
+  children?: Children;
+  style?: CSSProperties;
+  className?: string;
+}
+
+export interface BackTopProps {
+  visibilityHeight?: number;
+  target?: () => HTMLElement | Window;
+  onClick?: () => void;
+  children?: Children;
   style?: CSSProperties;
   className?: string;
 }

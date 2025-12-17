@@ -48,6 +48,7 @@ import {
   getMenuRoutes,
   useNavigate,
   getMergedAppConfig,
+  initMetadataFromAST,
 } from '@qwe8652591/dsl-core';
 
 import { initDatabase } from './database';
@@ -340,8 +341,29 @@ export function App({ routes, initSqlContent }: {
   );
 }
 
+// 🆕 从 API 端点加载 AST 元数据
+async function loadASTMetadata(): Promise<void> {
+  try {
+    // 在开发模式下从 vite-plugin 的 API 端点获取 AST 分析结果
+    const response = await fetch('/__ai-builder/runtime-metadata');
+    if (response.ok) {
+      const astMetadata = await response.json();
+      if (Array.isArray(astMetadata)) {
+        initMetadataFromAST(astMetadata, { overwrite: false, debug: false });
+        console.log('[DSL Runtime] AST 元数据已加载');
+      }
+    }
+  } catch (e) {
+    // 忽略错误（可能不在开发模式或插件未启用）
+    console.log('[DSL Runtime] AST 元数据加载跳过（可能不在开发模式）');
+  }
+}
+
 // 渲染函数
-export function render(routes: any[], initSqlContent?: string) {
+export async function render(routes: any[], initSqlContent?: string) {
+  // 先加载 AST 元数据
+  await loadASTMetadata();
+  
   const root = ReactDOM.createRoot(document.getElementById('root')!);
   root.render(<App routes={routes} initSqlContent={initSqlContent} />);
 }

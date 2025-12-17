@@ -7,7 +7,7 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ['vite'],
+  external: ['vite', 'typescript', 'ts-morph', 'glob'],
   treeshake: true,
 });
 

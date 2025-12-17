@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/dsl-runtime",
-  "version": "0.1.9",
+  "version": "0.1.12",
   "description": "DSL Runtime - 解析和运行 DSL 项目",
   "type": "module",
   "main": "./dist/index.js",
@@ -36,6 +36,7 @@
   "dependencies": {
     "@qwe8652591/dsl-core": "workspace:*",
     "@qwe8652591/std-ui": "workspace:*",
+    "@qwe8652591/vite-plugin": "workspace:*",
     "@vitejs/plugin-react": "^4.3.0",
     "vite": "^5.0.0",
     "react": "^18.2.0",

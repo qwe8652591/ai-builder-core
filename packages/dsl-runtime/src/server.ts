@@ -10,6 +10,7 @@ import fs from 'fs';
 import { createRequire, Module } from 'module';
 import { fileURLToPath } from 'url';
 import type { DSLProjectConfig } from './loader.js';
+import { aiBuilderPlugin } from '@qwe8652591/vite-plugin';
 
 // 创建 require 函数用于解析模块路径
 const require = createRequire(import.meta.url);
@@ -28,10 +29,21 @@ function resolvePackage(packageName: string): string {
   // monorepo 根目录
   const monoRepoRoot = path.join(runtimePackageDir, '../..');
   
-  // 尝试从 workspace 包解析（如 @ai-builder/runtime-renderer）
+  // 尝试从 workspace 包解析（如 @ai-builder/runtime-renderer 或 @qwe8652591/*）
   if (packageName.startsWith('@ai-builder/')) {
     const workspacePath = path.join(monoRepoRoot, 'packages', packageName.replace('@ai-builder/', ''));
     if (fs.existsSync(workspacePath)) {
+      console.log(`[resolvePackage] ${packageName} -> ${workspacePath} (workspace)`);
+      return workspacePath;
+    }
+  }
+  
+  // 尝试从 @qwe8652591 workspace 包解析
+  if (packageName.startsWith('@qwe8652591/')) {
+    const pkgShortName = packageName.replace('@qwe8652591/', '');
+    const workspacePath = path.join(monoRepoRoot, 'packages', pkgShortName);
+    if (fs.existsSync(workspacePath)) {
+      console.log(`[resolvePackage] ${packageName} -> ${workspacePath} (workspace)`);
       return workspacePath;
     }
   }
@@ -39,12 +51,15 @@ function resolvePackage(packageName: string): string {
   // 使用 require.resolve 获取模块的实际路径
   try {
     const resolved = require.resolve(packageName + '/package.json', { paths: [runtimePackageDir] });
-    return path.dirname(resolved);
-  } catch {
-    // 忽略错误，继续尝试其他方式
+    const resolvedPath = path.dirname(resolved);
+    console.log(`[resolvePackage] ${packageName} -> ${resolvedPath} (require.resolve)`);
+    return resolvedPath;
+  } catch (e) {
+    console.warn(`[resolvePackage] ${packageName} 解析失败:`, (e as Error).message);
   }
   
   // 返回原始包名，让 Vite 自己解析
+  console.log(`[resolvePackage] ${packageName} -> ${packageName} (fallback)`);
   return packageName;
 }
 
@@ -481,6 +496,13 @@ export async function createDevServer(config: DSLProjectConfig): Promise<ViteDev
     },
     
     plugins: [
+      // 🆕 AST 静态分析插件
+      aiBuilderPlugin({
+        debug: false,
+        enableAnalyzer: true,
+        projectRoot: config.root,
+      }),
+      
       // HTML 入口插件
       {
         name: 'dsl-runtime-html',

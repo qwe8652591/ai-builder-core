@@ -8,26 +8,59 @@
  */
 
 import type {
+  // 布局组件
   PageProps,
   CardProps,
   RowProps,
   ColProps,
+  // 表单组件
   FormProps,
   InputProps,
+  TextareaProps,
+  InputNumberProps,
   SelectProps,
+  CheckboxProps,
+  CheckboxGroupProps,
+  RadioProps,
+  RadioGroupProps,
+  SwitchProps,
   DatePickerProps,
+  TimePickerProps,
   UploadProps,
+  // 数据展示组件
   TableProps,
   TagProps,
   DescriptionsProps,
+  AvatarProps,
+  BadgeProps,
+  EmptyProps,
+  TooltipProps,
+  TreeProps,
+  TimelineProps,
+  ImageProps,
+  ListProps,
+  // 反馈组件
   ModalProps,
   LoadingProps,
+  AlertProps,
+  DrawerProps,
+  ProgressProps,
+  PopconfirmProps,
+  ResultProps,
+  SkeletonProps,
+  // 导航组件
   MenuProps,
   TabsProps,
   BreadcrumbProps,
+  StepsProps,
+  DropdownProps,
+  AffixProps,
+  BackTopProps,
+  // 基础组件
   ButtonProps,
   IconProps,
   LinkProps,
+  // API 类型
   MessageAPI,
   NotificationAPI,
 } from './index';
@@ -127,6 +160,62 @@ export const DatePicker: (props: DatePickerProps) => JSXElement = () => null as 
  */
 export const Upload: (props: UploadProps) => JSXElement = () => null as unknown as JSXElement;
 
+/**
+ * Textarea - 多行文本输入框组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Textarea: (props: TextareaProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * InputNumber - 数字输入框组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const InputNumber: (props: InputNumberProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Checkbox - 复选框组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Checkbox: (props: CheckboxProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * CheckboxGroup - 复选框组组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const CheckboxGroup: (props: CheckboxGroupProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Radio - 单选框组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Radio: (props: RadioProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * RadioGroup - 单选框组组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const RadioGroup: (props: RadioGroupProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Switch - 开关组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Switch: (props: SwitchProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * TimePicker - 时间选择器组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const TimePicker: (props: TimePickerProps) => JSXElement = () => null as unknown as JSXElement;
+
 // ============================================
 // 数据展示组件
 // ============================================
@@ -164,6 +253,62 @@ export const Tag: (props: TagProps) => JSXElement = () => null as unknown as JSX
  */
 export const Descriptions: (props: DescriptionsProps) => JSXElement = () => null as unknown as JSXElement;
 
+/**
+ * Avatar - 头像组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Avatar: (props: AvatarProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Badge - 徽标组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Badge: (props: BadgeProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Empty - 空状态组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Empty: (props: EmptyProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Tooltip - 文字提示组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Tooltip: (props: TooltipProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Tree - 树形控件组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Tree: (props: TreeProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Timeline - 时间线组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Timeline: (props: TimelineProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Image - 图片组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Image: (props: ImageProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * List - 列表组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const List: <T = unknown>(props: ListProps<T>) => JSXElement = () => null as unknown as JSXElement;
+
 // ============================================
 // 反馈组件
 // ============================================
@@ -196,6 +341,48 @@ export const Message: MessageAPI = {} as MessageAPI;
  */
 export const Notification: NotificationAPI = {} as NotificationAPI;
 
+/**
+ * Alert - 警告提示组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Alert: (props: AlertProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Drawer - 抽屉组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Drawer: (props: DrawerProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Progress - 进度条组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Progress: (props: ProgressProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Popconfirm - 气泡确认框组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Popconfirm: (props: PopconfirmProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Result - 结果组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Result: (props: ResultProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Skeleton - 骨架屏组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Skeleton: (props: SkeletonProps) => JSXElement = () => null as unknown as JSXElement;
+
 // ============================================
 // 导航组件
 // ============================================
@@ -220,6 +407,34 @@ export const Tabs: (props: TabsProps) => JSXElement = () => null as unknown as J
  * @virtual 编译时会被替换为具体的 UI 库实现
  */
 export const Breadcrumb: (props: BreadcrumbProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Steps - 步骤条组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Steps: (props: StepsProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Dropdown - 下拉菜单组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Dropdown: (props: DropdownProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * Affix - 固钉组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const Affix: (props: AffixProps) => JSXElement = () => null as unknown as JSXElement;
+
+/**
+ * BackTop - 回到顶部组件
+ * 
+ * @virtual 编译时会被替换为具体的 UI 库实现
+ */
+export const BackTop: (props: BackTopProps) => JSXElement = () => null as unknown as JSXElement;
 
 // ============================================
 // 基础组件

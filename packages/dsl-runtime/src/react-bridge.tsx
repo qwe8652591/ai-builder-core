@@ -20,6 +20,9 @@ import {
   getPageByRoute, 
   getDefaultPage, 
   getAllComponents,
+  // 元数据
+  extractComponentsFromVNode,
+  updateMetadata,
   // 状态
   setHookImplementation, 
   type HookImplementation, 
@@ -527,6 +530,33 @@ export const DSLPageRenderer: React.FC<DSLPageRendererProps> = ({
       state.effectCleanups.clear();
     };
   }, [page, enrichedProps, hookImpl, effectHookImpl]);
+  
+  // 🆕 解析 VNode/React Element 提取组件信息，更新元数据
+  React.useEffect(() => {
+    if (vnode && page.meta) {
+      try {
+        const vnodeObj = vnode as any;
+        const hasType = vnodeObj && typeof vnodeObj.type !== 'undefined';
+        
+        if (hasType) {
+          const components = extractComponentsFromVNode(vnode);
+          const pageName = page.meta.title || page.meta.route || 'AnonymousPage';
+          
+          console.log(`[DSLPageRenderer] 🔍 解析组件: ${pageName}`, {
+            rootType: typeof vnodeObj.type === 'function' ? vnodeObj.type.name : vnodeObj.type,
+            foundComponents: components,
+          });
+          
+          if (components.length > 0) {
+            updateMetadata(pageName, { components });
+            console.log(`[DSLPageRenderer] ✅ 已更新元数据: ${pageName}`, components);
+          }
+        }
+      } catch (e) {
+        console.warn('[DSLPageRenderer] ❌ 解析失败:', e);
+      }
+    }
+  }, [vnode, page.meta]);
   
   // 转换 VNode 为 React 元素
   const reactElement = React.useMemo(() => {

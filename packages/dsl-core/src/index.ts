@@ -198,7 +198,9 @@ export type {
 
 export {
   metadataStore,
+  DSLMetadataStore,
   registerMetadata,
+  updateMetadata,
   registerExtension,
   defineExtension,
   type ExtensionDefinition,
@@ -215,7 +217,39 @@ export {
   typeToSubLayer,
   typeLabels,
   typeIcons,
+  // 🆕 类型映射工具函数
+  getTypeLayer,
+  getTypeSubLayer,
+  getTypeLabel,
+  getTypeIcon,
+  // AST 元数据初始化
+  initMetadataFromAST,
+  clearAllMetadata,
+  type ASTMetadataItem,
+  // 🆕 自定义类型注册 API
+  registerDSLType,
+  getDSLTypeConfig,
+  getAllDSLTypes,
+  onMetadataChange,
+  triggerDeriveMetadata,
+  type CustomTypeConfig,
+  type DefineMethod,
+  type DerivedMetadataItem,
+  type MetadataChangeListener,
+  // 🆕 工厂函数 API
+  type BaseDefinition,
+  createDefiner,
+  createDecorator,
+  createPropertyDecorator,
+  // 🆕 派生元数据工具
+  type EntityRelation,
+  computeEntityRelations,
+  enableEntityRelationDerive,
+  getEntityRelations,
 } from './dsl-runtime/metadata-store';
+
+// VNode 解析工具
+export { extractComponentsFromVNode } from './dsl-runtime/dsl-engine';
 
 // ==================== ORM DSL ====================
 
@@ -289,6 +323,7 @@ export type { DSLProjectConfig } from './dsl-runtime/project-config';
 
 export type {
   DSLType as MetadataDSLType,
+  BuiltinDSLType,
   DSLLayer,
   DSLSubLayer,
   BaseDSLMetadata,

@@ -24,6 +24,7 @@ import {
   Tag,
   Breadcrumb,
   Menu,
+  Tabs,
   Descriptions,
   Icon,
   Divider,
@@ -61,6 +62,7 @@ export const antdComponentMapping: ComponentMapping = {
   
   // 导航组件
   Menu,
+  Tabs,
   Breadcrumb,
   
   // 基础组件

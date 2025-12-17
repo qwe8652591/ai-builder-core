@@ -1,0 +1,192 @@
+{
+  "name": "@qwe8652591/vscode-dsl",
+  "displayName": "AI Builder DSL",
+  "description": "DSL 开发工具 - 元数据浏览、页面预览、代码智能",
+  "version": "0.1.0",
+  "publisher": "qwe8652591",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "dsl",
+    "low-code",
+    "metadata",
+    "preview"
+  ],
+  "activationEvents": [
+    "workspaceContains:**/*.page.tsx",
+    "workspaceContains:**/*.entity.ts",
+    "workspaceContains:dsl.config.ts"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "dsl-explorer",
+          "title": "DSL 资源",
+          "icon": "resources/dsl-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "dsl-explorer": [
+        {
+          "id": "dsl-resources",
+          "name": "资源目录",
+          "icon": "resources/dsl-icon.svg",
+          "contextualTitle": "DSL 资源目录"
+        },
+        {
+          "id": "dsl-runtime-status",
+          "name": "运行状态",
+          "visibility": "collapsed"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "dsl-resources",
+        "contents": "未检测到 DSL 项目。\n请打开包含 dsl.config.ts 的项目文件夹。\n[打开文件夹](command:vscode.openFolder)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "dsl.startRuntime",
+        "title": "启动开发服务器",
+        "category": "DSL",
+        "icon": "$(play)"
+      },
+      {
+        "command": "dsl.stopRuntime",
+        "title": "停止开发服务器",
+        "category": "DSL",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "dsl.refreshResources",
+        "title": "刷新资源",
+        "category": "DSL",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "dsl.previewPage",
+        "title": "预览页面",
+        "category": "DSL",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "dsl.openInModeler",
+        "title": "在 Modeler 中打开",
+        "category": "DSL",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "dsl.viewMetadata",
+        "title": "查看元数据",
+        "category": "DSL",
+        "icon": "$(json)"
+      },
+      {
+        "command": "dsl.goToSource",
+        "title": "跳转到源码",
+        "category": "DSL",
+        "icon": "$(go-to-file)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "dsl.refreshResources",
+          "when": "view == dsl-resources",
+          "group": "navigation"
+        },
+        {
+          "command": "dsl.startRuntime",
+          "when": "view == dsl-resources && !dsl.runtimeRunning",
+          "group": "navigation"
+        },
+        {
+          "command": "dsl.stopRuntime",
+          "when": "view == dsl-resources && dsl.runtimeRunning",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "dsl.previewPage",
+          "when": "view == dsl-resources && viewItem == page",
+          "group": "inline"
+        },
+        {
+          "command": "dsl.viewMetadata",
+          "when": "view == dsl-resources && viewItem =~ /^(entity|dto|enum|page|component|service|extension)$/",
+          "group": "inline"
+        },
+        {
+          "command": "dsl.goToSource",
+          "when": "view == dsl-resources && viewItem =~ /^(entity|dto|enum|page|component|service|extension)$/",
+          "group": "1_navigation"
+        },
+        {
+          "command": "dsl.openInModeler",
+          "when": "view == dsl-resources",
+          "group": "2_modeler"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "dsl.previewPage",
+          "when": "dsl.hasProject"
+        },
+        {
+          "command": "dsl.openInModeler",
+          "when": "dsl.hasProject"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Builder DSL",
+      "properties": {
+        "dsl.runtime.port": {
+          "type": "number",
+          "default": 3000,
+          "description": "开发服务器端口"
+        },
+        "dsl.runtime.autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "打开项目时自动启动开发服务器"
+        },
+        "dsl.modeler.port": {
+          "type": "number",
+          "default": 4000,
+          "description": "Modeler 服务端口"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm build",
+    "build": "tsup",
+    "watch": "tsup --watch",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  },
+  "dependencies": {
+    "@qwe8652591/vite-plugin": "workspace:*"
+  }
+}
+
+

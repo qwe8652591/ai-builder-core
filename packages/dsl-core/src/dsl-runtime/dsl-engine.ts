@@ -5,8 +5,102 @@
  */
 
 import type { VNode, VNodeChild } from '../types';
+import { isVNode } from '@qwe8652591/std-ui';
 import { PageContext, runInContext, type PageMeta, type IPageContext } from './page-context';
-import { registerMetadata } from './metadata-store';
+import { registerMetadata, updateMetadata } from './metadata-store';
+
+// ==================== VNode 解析工具 ====================
+
+// React 元素标识符
+const REACT_ELEMENT_TYPE = Symbol.for('react.element');
+
+/**
+ * 检查是否是 React 元素或 DSL VNode
+ */
+function isReactElementOrVNode(node: unknown): boolean {
+  if (!node || typeof node !== 'object') return false;
+  const obj = node as Record<string, unknown>;
+  // DSL VNode 或 React Element
+  return isVNode(node) || obj.$$typeof === REACT_ELEMENT_TYPE;
+}
+
+/**
+ * 从 VNode/React Element 树中提取所有使用的组件名称
+ */
+export function extractComponentsFromVNode(vnode: unknown): string[] {
+  const components = new Set<string>();
+  
+  function traverse(node: unknown): void {
+    if (!node) return;
+    
+    // 处理数组
+    if (Array.isArray(node)) {
+      node.forEach(traverse);
+      return;
+    }
+    
+    // 处理 VNode 或 React Element
+    if (isReactElementOrVNode(node)) {
+      const v = node as { type: unknown; props?: { children?: unknown; [key: string]: unknown } };
+      
+      // 提取组件类型
+      if (typeof v.type === 'string') {
+        // HTML 元素或虚拟组件（如 'Page', 'Card' 等）
+        // 排除原生 HTML 标签（首字母大写的是组件）
+        if (v.type[0] === v.type[0].toUpperCase()) {
+          components.add(v.type);
+        }
+      } else if (typeof v.type === 'function') {
+        // 函数组件
+        const fn = v.type as Function & { displayName?: string };
+        const name = fn.name || fn.displayName || 'Anonymous';
+        if (name !== 'Anonymous' && name !== '_c') {
+          components.add(name);
+        }
+      }
+      
+      // 递归处理 children
+      if (v.props?.children) {
+        traverse(v.props.children);
+      }
+      
+      // 遍历其他可能包含 VNode 的 props（如 headerTabs, itemDetailTabs 等）
+      for (const key of Object.keys(v.props || {})) {
+        if (key !== 'children') {
+          const propValue = v.props![key];
+          // 处理 VNode/React Element
+          if (isReactElementOrVNode(propValue)) {
+            traverse(propValue);
+          }
+          // 处理数组（可能包含 VNode）
+          else if (Array.isArray(propValue)) {
+            propValue.forEach((item: unknown) => {
+              if (isReactElementOrVNode(item)) {
+                traverse(item);
+              } else if (typeof item === 'object' && item !== null) {
+                // 处理 TabItem 等对象，可能包含 content 属性是 VNode
+                const obj = item as Record<string, unknown>;
+                if (obj.content && isReactElementOrVNode(obj.content)) {
+                  traverse(obj.content);
+                }
+              }
+            });
+          }
+          // 处理对象属性（如 content）
+          else if (typeof propValue === 'object' && propValue !== null) {
+            const obj = propValue as Record<string, unknown>;
+            if (obj.content && isReactElementOrVNode(obj.content)) {
+              traverse(obj.content);
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  traverse(vnode);
+  return Array.from(components).sort();
+}
 
 /** JSX 返回类型（兼容 React JSX.Element） */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,6 +153,15 @@ export class DSLEngine {
     // 在上下文中执行 setup
     const vnode = runInContext(ctx, () => definition.setup(props));
     ctx.setRenderResult(vnode as VNode);
+    
+    // 🆕 解析 VNode 提取组件信息，更新元数据
+    try {
+      const components = extractComponentsFromVNode(vnode);
+      const pageName = definition.meta.title || definition.meta.route || 'AnonymousPage';
+      updateMetadata(pageName, { components });
+    } catch (e) {
+      console.warn('[DSLEngine] 解析页面组件失败:', e);
+    }
     
     // 注册页面
     if (definition.meta.route) {
@@ -191,13 +294,23 @@ export function definePage<P = {}>(
   }
   
   // 🎯 注册到 Metadata Store（用于架构展示）
-  registerMetadata({
+  // 注意：components 会在页面首次渲染后自动填充
+  const pageMetadata: Record<string, unknown> = {
     __type: 'page',
     name: meta.title || meta.route || 'AnonymousPage',
-    meta,
     description: meta.description,
+    // 基础路由信息
+    route: meta.route,
+    permission: meta.permission,
+    // 菜单配置
+    menu: meta.menu,
+    // 🆕 组件列表（页面渲染后自动解析填充）
+    components: [],
+    // 保留原始定义（用于高级用途）
     definition,
-  });
+  };
+  
+  registerMetadata(pageMetadata);
   
   return definition;
 }

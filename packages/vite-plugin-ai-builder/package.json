@@ -1,7 +1,7 @@
 {
   "name": "@qwe8652591/vite-plugin",
-  "version": "0.1.0",
-  "description": "Vite plugin for ai-builder DSL transformation",
+  "version": "0.2.0",
+  "description": "Vite plugin for ai-builder DSL transformation and AST analysis",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -19,13 +19,19 @@
     "type-check": "tsc --noEmit"
   },
   "peerDependencies": {
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "glob": "^10.3.10",
+    "ts-morph": "^22.0.0"
   },
   "devDependencies": {
     "vite": "^5.4.0",
     "typescript": "^5.9.3",
     "tsup": "^8.0.1",
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "@types/glob": "^8.1.0"
   }
 }
 

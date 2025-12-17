@@ -36,6 +36,7 @@ import {
   Tag as AntTag,
   Breadcrumb as AntBreadcrumb,
   Menu as AntMenu,
+  Tabs as AntTabs,
   Row as AntRow,
   Col as AntCol,
   Descriptions as AntDescriptions,
@@ -403,7 +404,13 @@ const toDayjs = (value: unknown): dayjs.Dayjs | null | undefined => {
     return dayjs(value);
   }
   if (typeof value === 'string') {
-    return dayjs(value);
+    // 空字符串返回 null，避免 Invalid Date
+    if (value === '' || value.trim() === '') {
+      return null;
+    }
+    const parsed = dayjs(value);
+    // 检查解析结果是否有效
+    return parsed.isValid() ? parsed : null;
   }
   return null;
 };
@@ -473,9 +480,14 @@ export const Table = <T extends Record<string, unknown> = Record<string, unknown
   pagination,
   loading,
   onSelectionChange,
+  onRowClick,
+  rowClassName,
   style,
   className,
-}: TableProps<T>): React.ReactElement => {
+}: TableProps<T> & { 
+  onRowClick?: (row: T, index: number) => void;
+  rowClassName?: string | ((record: T, index: number) => string);
+}): React.ReactElement => {
   // 将 DSL 列定义映射到 Ant Design 列定义
   // DSL 使用 prop/label，Ant Design 使用 dataIndex/title
   const antdColumns = columns.map((col: any) => ({
@@ -508,6 +520,16 @@ export const Table = <T extends Record<string, unknown> = Record<string, unknown
     ? (record: Record<string, unknown>) => String((rowKey as any)(record as T))
     : String(rowKey);
 
+  // 处理 rowClassName
+  const getRowClassName = rowClassName
+    ? (record: Record<string, unknown>, index: number) => {
+        if (typeof rowClassName === 'function') {
+          return rowClassName(record as T, index);
+        }
+        return rowClassName;
+      }
+    : undefined;
+
   return (
     <AntTable<Record<string, unknown>>
       dataSource={dataSource}
@@ -524,6 +546,17 @@ export const Table = <T extends Record<string, unknown> = Record<string, unknown
             }
           : undefined
       }
+      onRow={(record, index) => {
+        const isSelected = (record as any)._selected === true;
+        return {
+          onClick: onRowClick ? () => onRowClick(record as T, index ?? 0) : undefined,
+          style: { 
+            cursor: onRowClick ? 'pointer' : undefined,
+            backgroundColor: isSelected ? '#e6f7ff' : undefined,
+          },
+        };
+      }}
+      rowClassName={getRowClassName}
       pagination={pagination}
       loading={loading}
       style={style}
@@ -817,6 +850,46 @@ export const FormItem: React.FC<{
     >
       {children}
     </AntForm.Item>
+  );
+};
+
+/**
+ * 20. Tabs 组件 - 标签页
+ */
+export const Tabs: React.FC<TabsProps> = ({
+  items,
+  activeKey,
+  onChange,
+  style,
+  className,
+}) => {
+  // 将 DSL 的 items 格式转换为 Ant Design 的格式
+  // children 可能是 VNode/函数/数组等，统一使用 vnodeToReactElement 转换
+  const antdItems = items.map((item) => {
+    let children = item.children;
+    // 始终尝试使用 vnodeToReactElement 转换 children
+    if (children !== null && children !== undefined) {
+      try {
+        children = vnodeToReactElement(children as any);
+      } catch (e) {
+        console.error('[Tabs] Error converting children:', e);
+      }
+    }
+    return {
+      key: item.key,
+      label: item.tab,
+      children,
+    };
+  });
+
+  return (
+    <AntTabs
+      items={antdItems}
+      activeKey={activeKey}
+      onChange={onChange}
+      style={style}
+      className={className}
+    />
   );
 };
 
