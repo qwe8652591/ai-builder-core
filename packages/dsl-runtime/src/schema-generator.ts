@@ -163,17 +163,31 @@ function getSQLiteType(fieldDef: { type: string; relation?: string }): string {
 
 /**
  * 生成 CREATE TABLE SQL
+ * 
+ * 注意：SQLite 只支持单列 PRIMARY KEY 内联语法，复合主键需要使用表级约束
  */
 function generateCreateTableSQL(tableName: string, columns: TableColumn[]): string {
+  // 收集主键列
+  const primaryKeyColumns = columns.filter(col => col.isPrimaryKey);
+  const hasSinglePrimaryKey = primaryKeyColumns.length === 1;
+  const hasCompositePrimaryKey = primaryKeyColumns.length > 1;
+  
   const columnDefs = columns.map(col => {
     let def = `${col.name} ${col.sqlType}`;
-    if (col.isPrimaryKey) {
+    // 只有单一主键时才内联 PRIMARY KEY
+    if (col.isPrimaryKey && hasSinglePrimaryKey) {
       def += ' PRIMARY KEY';
     } else if (col.isRequired) {
       def += ' NOT NULL';
     }
     return def;
   });
+  
+  // 复合主键使用表级约束
+  if (hasCompositePrimaryKey) {
+    const pkNames = primaryKeyColumns.map(col => col.name).join(', ');
+    columnDefs.push(`PRIMARY KEY (${pkNames})`);
+  }
   
   return `CREATE TABLE IF NOT EXISTS ${tableName} (\n  ${columnDefs.join(',\n  ')}\n);`;
 }

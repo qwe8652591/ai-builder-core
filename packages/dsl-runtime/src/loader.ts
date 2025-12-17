@@ -9,6 +9,7 @@
 import { glob } from 'glob';
 import path from 'path';
 import fs from 'fs';
+import { pathToFileURL } from 'url';
 import { createServer, type ViteDevServer } from 'vite';
 import type { DSLProjectConfig } from '@qwe8652591/dsl-core';
 
@@ -94,12 +95,12 @@ export async function loadDSLConfig(projectPath: string): Promise<DSLProjectConf
   
   let userConfig: Partial<DSLProjectConfig> = {};
   
-  // 尝试加载用户配置
+  // 尝试加载用户配置（使用 file:// URL 以兼容 Windows）
   if (fs.existsSync(configPath)) {
-    const module = await import(configPath);
+    const module = await import(pathToFileURL(configPath).href);
     userConfig = module.default || module;
   } else if (fs.existsSync(configJsPath)) {
-    const module = await import(configJsPath);
+    const module = await import(pathToFileURL(configJsPath).href);
     userConfig = module.default || module;
   }
   
