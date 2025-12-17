@@ -13,7 +13,11 @@ import {
   CopyOutlined,
   ReloadOutlined,
   DownloadOutlined,
+  FileTextOutlined,
+  CodeOutlined,
 } from '@ant-design/icons';
+import { Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
 import type { EntityMetadata } from './types';
 
 // ==================== 类型定义 ====================
@@ -58,6 +62,74 @@ const colors = {
  */
 function toSnakeCase(str: string): string {
   return str.replace(/([A-Z])/g, '_$1').toLowerCase().replace(/^_/, '');
+}
+
+/**
+ * 生成 TypeScript 代码（用于持久化 ER 关系）
+ */
+function generateTypeScriptCode(
+  relations: EntityRelation[],
+  entities?: EntityMetadata[],
+  mode: 'entity' | 'table' = 'entity'
+): string {
+  const lines: string[] = [];
+  
+  lines.push('/**');
+  lines.push(` * ${mode === 'table' ? '数据库表' : '实体'}关系定义`);
+  lines.push(` * 自动生成于 ${new Date().toLocaleString()}`);
+  lines.push(' */');
+  lines.push('');
+  
+  if (mode === 'entity') {
+    lines.push('// 实体关系定义');
+    lines.push('export const entityRelations = [');
+    for (const r of relations) {
+      lines.push(`  {`);
+      lines.push(`    source: '${r.source}',`);
+      lines.push(`    target: '${r.target}',`);
+      lines.push(`    fieldName: '${r.fieldName}',`);
+      lines.push(`    relationType: '${r.relationType}',`);
+      if (r.isArray) lines.push(`    isArray: true,`);
+      if (r.isRequired) lines.push(`    isRequired: true,`);
+      lines.push(`  },`);
+    }
+    lines.push('] as const;');
+  } else {
+    // 表模式
+    lines.push('// 数据库表关系定义');
+    lines.push('export const tableRelations = [');
+    for (const r of relations) {
+      const sourceTable = toSnakeCase(r.source);
+      const targetTable = toSnakeCase(r.target);
+      const fkName = `${r.fieldName}_id`;
+      
+      lines.push(`  {`);
+      lines.push(`    sourceTable: '${sourceTable}',`);
+      lines.push(`    targetTable: '${targetTable}',`);
+      lines.push(`    foreignKey: '${fkName}',`);
+      lines.push(`    relationType: '${r.relationType}',`);
+      lines.push(`  },`);
+    }
+    lines.push('] as const;');
+    
+    // 添加表结构摘要
+    if (entities && entities.length > 0) {
+      lines.push('');
+      lines.push('// 表结构摘要');
+      lines.push('export const tables = [');
+      for (const e of entities) {
+        if (e.table) {
+          lines.push(`  { entity: '${e.name}', table: '${e.table}', comment: '${e.comment || ''}' },`);
+        }
+      }
+      lines.push('] as const;');
+    }
+  }
+  
+  lines.push('');
+  lines.push('export type EntityRelationType = typeof entityRelations[number];');
+  
+  return lines.join('\n');
 }
 
 /**
@@ -426,6 +498,53 @@ export function ERDiagram({ relations, entities, onEntityClick, mode = 'entity' 
     message.success('已导出 SVG');
   };
   
+  // 导出 JSON（持久化 ER 关系）
+  const handleExportJSON = () => {
+    const exportData = {
+      generatedAt: new Date().toISOString(),
+      mode,
+      relations: relations.map(r => ({
+        source: r.source,
+        target: r.target,
+        fieldName: r.fieldName,
+        relationType: r.relationType,
+        isArray: r.isArray,
+        isRequired: r.isRequired,
+      })),
+      entities: entities?.map(e => ({
+        name: e.name,
+        table: e.table,
+        comment: e.comment,
+        fieldCount: Object.keys(e.fields || {}).length,
+      })),
+    };
+    
+    const jsonStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = mode === 'table' ? 'table-relations.json' : 'entity-relations.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    message.success('已导出 JSON');
+  };
+  
+  // 导出 TypeScript 代码（可直接复制到项目中）
+  const handleExportTS = () => {
+    const tsCode = generateTypeScriptCode(relations, entities, mode);
+    const blob = new Blob([tsCode], { type: 'text/typescript' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = mode === 'table' ? 'table-relations.ts' : 'entity-relations.ts';
+    a.click();
+    URL.revokeObjectURL(url);
+    message.success('已导出 TypeScript 文件');
+  };
+  
   // 空状态
   if (relations.length === 0) {
     return (
@@ -503,14 +622,29 @@ export function ERDiagram({ relations, entities, onEntityClick, mode = 'entity' 
                   onClick={renderDiagram}
                 />
               </Tooltip>
-              <Tooltip title="导出 SVG">
-                <Button
-                  type="text"
-                  size="small"
-                  icon={<DownloadOutlined />}
-                  onClick={handleExportSVG}
-                />
-              </Tooltip>
+              <Dropdown
+                menu={{
+                  items: [
+                    { key: 'svg', label: '导出 SVG 图片', icon: <DownloadOutlined /> },
+                    { key: 'json', label: '导出 JSON 数据', icon: <FileTextOutlined /> },
+                    { key: 'ts', label: '导出 TypeScript 代码', icon: <CodeOutlined /> },
+                  ],
+                  onClick: ({ key }) => {
+                    if (key === 'svg') handleExportSVG();
+                    else if (key === 'json') handleExportJSON();
+                    else if (key === 'ts') handleExportTS();
+                  },
+                }}
+                trigger={['click']}
+              >
+                <Tooltip title="导出">
+                  <Button
+                    type="text"
+                    size="small"
+                    icon={<DownloadOutlined />}
+                  />
+                </Tooltip>
+              </Dropdown>
             </>
           )}
           {viewMode === 'code' && (
