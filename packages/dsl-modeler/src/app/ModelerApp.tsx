@@ -39,6 +39,8 @@ import type {
   ServiceMetadata,
   ExtensionMetadata,
   ComponentNode,
+  MethodCallChainMetadata,
+  MethodCall,
 } from './types';
 import { layerConfig, typeColors, typeLabels, typeIcons } from './types';
 
@@ -920,6 +922,157 @@ function ExtensionPreview({ extension }: { extension: ExtensionMetadata }) {
   );
 }
 
+/** 方法调用链预览 */
+function CallChainPreview({ callChain }: { callChain: MethodCallChainMetadata }) {
+  const getCallTypeColor = (type: string) => {
+    switch (type) {
+      case 'repository': return '#52c41a';  // 绿色 - 数据访问
+      case 'service': return '#1890ff';      // 蓝色 - 服务调用
+      case 'internal': return '#faad14';     // 黄色 - 内部调用
+      default: return '#333';
+    }
+  };
+  
+  const getCallTypeLabel = (type: string) => {
+    switch (type) {
+      case 'repository': return '仓储';
+      case 'service': return '服务';
+      case 'internal': return '内部';
+      default: return type;
+    }
+  };
+  
+  const getSourceTypeLabel = (type: string) => {
+    switch (type) {
+      case 'appService': return '应用服务';
+      case 'service': return '业务服务';
+      case 'repository': return '仓储';
+      default: return type;
+    }
+  };
+  
+  return (
+    <div style={{ padding: 20 }}>
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{ margin: 0, color: colors.text, display: 'flex', alignItems: 'center', gap: 12 }}>
+          <ApartmentOutlined style={{ color: typeColors.methodCallChain }} />
+          {callChain.sourceClass}.{callChain.sourceMethod}()
+        </h2>
+        <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
+          <Tag color={callChain.sourceClassType === 'appService' ? 'red' : 'magenta'}>
+            {getSourceTypeLabel(callChain.sourceClassType)}
+          </Tag>
+          <Tag color="blue">
+            调用 {callChain.calls.length} 个方法
+          </Tag>
+        </div>
+      </div>
+      
+      {/* 调用链可视化 */}
+      <div style={{ marginBottom: 20 }}>
+        <h4 style={{ color: colors.text, marginBottom: 12 }}>🔗 调用链</h4>
+        <div style={{ 
+          background: colors.bg, 
+          borderRadius: 8, 
+          padding: 16,
+        }}>
+          {/* 源方法 */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            marginBottom: 16,
+          }}>
+            <div style={{
+              background: typeColors.methodCallChain,
+              color: '#fff',
+              padding: '8px 16px',
+              borderRadius: 6,
+              fontFamily: 'Consolas, Monaco, monospace',
+              fontWeight: 500,
+            }}>
+              {callChain.sourceClass}.{callChain.sourceMethod}()
+            </div>
+          </div>
+          
+          {/* 调用目标 */}
+          {callChain.calls.map((call: MethodCall, index: number) => (
+            <div key={index} style={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              marginLeft: 32,
+              marginTop: 8,
+            }}>
+              {/* 连接线 */}
+              <div style={{ 
+                width: 24, 
+                borderTop: `2px dashed ${colors.border}`,
+                marginRight: 8,
+              }} />
+              
+              {/* 箭头 */}
+              <span style={{ marginRight: 8, color: colors.textSecondary }}>→</span>
+              
+              {/* 目标方法 */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+              }}>
+                <Tag 
+                  color={getCallTypeColor(call.callType)}
+                  style={{ margin: 0 }}
+                >
+                  {getCallTypeLabel(call.callType)}
+                </Tag>
+                <span style={{ 
+                  fontFamily: 'Consolas, Monaco, monospace',
+                  color: call.callType === 'internal' ? colors.textSecondary : colors.text,
+                }}>
+                  {call.targetClass === 'self' ? 'this' : call.targetClass}.{call.targetMethod}()
+                </span>
+              </div>
+            </div>
+          ))}
+          
+          {callChain.calls.length === 0 && (
+            <div style={{ color: colors.textSecondary, fontStyle: 'italic' }}>
+              未检测到方法调用
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* 调用统计 */}
+      {callChain.calls.length > 0 && (
+        <div>
+          <h4 style={{ color: colors.text, marginBottom: 12 }}>📊 调用统计</h4>
+          <div style={{ display: 'flex', gap: 16 }}>
+            {['service', 'repository', 'internal'].map(type => {
+              const count = callChain.calls.filter(c => c.callType === type).length;
+              if (count === 0) return null;
+              return (
+                <div key={type} style={{ 
+                  background: colors.bg, 
+                  padding: '8px 16px',
+                  borderRadius: 6,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                  <Tag color={getCallTypeColor(type)} style={{ margin: 0 }}>
+                    {getCallTypeLabel(type)}
+                  </Tag>
+                  <span style={{ fontWeight: 500 }}>{count}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** 数据库表结构预览 */
 function TablePreview({ metadata, entityRelations, entities }: { 
   metadata: AnyMetadata; 
@@ -1279,6 +1432,8 @@ function PreviewArea({ metadata, entityRelations, entities, onEntityClick }: Pre
       return <ServicePreview service={metadata as ServiceMetadata} />;
     case 'extension':
       return <ExtensionPreview extension={metadata as ExtensionMetadata} />;
+    case 'methodCallChain':
+      return <CallChainPreview callChain={metadata as MethodCallChainMetadata} />;
     case 'erDiagram':
       // 🎯 实体关系图谱
       return (
@@ -1915,14 +2070,23 @@ export function ModelerApp() {
       const appServices = allServices.filter(s => s.__type === 'appService');
       const domainServices = allServices.filter(s => s.__type === 'service');
       
-      // 更新 result，使用分离后的服务
+      // 🆕 处理方法调用链：为每个调用链生成唯一的 name
+      const callChains = ((result as Record<string, unknown>).callChains || []) as MethodCallChainMetadata[];
+      const enrichedCallChains = callChains.map(chain => ({
+        ...chain,
+        name: `${chain.sourceClass}.${chain.sourceMethod}`,  // 用于树节点显示
+      }));
+      
+      // 更新 result，使用分离后的服务和调用链
       result = {
         ...result,
         services: appServices,  // 应用服务保留在原位置
         domainServices: domainServices,  // 业务服务放到领域层
+        callChains: enrichedCallChains,  // 方法调用链
       };
       
       console.log('[ModelerApp] 服务分离: 应用服务', appServices.length, '个, 业务服务', domainServices.length, '个');
+      console.log('[ModelerApp] 方法调用链:', enrichedCallChains.length, '个');
       
       // 获取实体关系（从 extended 或 result 中）
       const relations = (result.entityRelation || []) as EntityRelation[];

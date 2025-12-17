@@ -131,6 +131,24 @@ export interface ComponentMetadata {
   sourceFile?: string;
 }
 
+// ==================== 方法调用链 ====================
+
+export interface MethodCall {
+  targetClass: string;
+  targetMethod: string;
+  callType: 'service' | 'repository' | 'internal';
+}
+
+export interface MethodCallChainMetadata {
+  __type: 'methodCallChain';
+  name?: string;  // 用于显示
+  sourceClass: string;
+  sourceClassType: 'appService' | 'service' | 'repository';
+  sourceMethod: string;
+  calls: MethodCall[];
+  sourceFile?: string;
+}
+
 export type AnyMetadata = 
   | EntityMetadata 
   | DTOMetadata 
@@ -138,7 +156,8 @@ export type AnyMetadata =
   | PageMetadata 
   | ComponentMetadata 
   | ServiceMetadata 
-  | ExtensionMetadata;
+  | ExtensionMetadata
+  | MethodCallChainMetadata;
 
 export interface ASTMetadata {
   entities: EntityMetadata[];
@@ -149,6 +168,7 @@ export interface ASTMetadata {
   services: ServiceMetadata[];  // 应用服务（兼容）
   domainServices: ServiceMetadata[];  // 业务服务（领域层）
   extensions: ExtensionMetadata[];
+  callChains: MethodCallChainMetadata[];  // 方法调用链
 }
 
 // ==================== 树节点类型 ====================
@@ -203,6 +223,7 @@ export const layerConfig: Record<string, LayerConfig> = {
     subLayers: {
       dtos: { title: '数据传输对象', icon: '📤', dataKey: 'dtos' },
       services: { title: '应用服务', icon: '🎯', dataKey: 'services' },
+      callChains: { title: '方法调用链', icon: '🔗', dataKey: 'callChains', badge: '派生' },
     },
   },
   infrastructure: {
@@ -223,6 +244,7 @@ export const typeColors: Record<string, string> = {
   page: '#13c2c2',
   component: '#52c41a',
   extension: '#9254de',
+  methodCallChain: '#597ef7',  // 方法调用链（蓝紫色）
 };
 
 export const typeLabels: Record<string, string> = {
@@ -234,6 +256,7 @@ export const typeLabels: Record<string, string> = {
   page: '页面',
   component: '业务组件',
   extension: '扩展',
+  methodCallChain: '调用链',
 };
 
 // 每个元数据类型的图标
@@ -246,6 +269,7 @@ export const typeIcons: Record<string, string> = {
   page: '📄',
   component: '🧩',
   extension: '🔗',
+  methodCallChain: '🔀',  // 方法调用链
 };
 
 export const defaultTheme = {

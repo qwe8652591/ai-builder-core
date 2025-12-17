@@ -185,6 +185,33 @@ export interface ServiceMetadata {
   sourceFile?: string;
 }
 
+// ==================== 方法调用链 ====================
+
+/** 单个方法调用 */
+export interface MethodCall {
+  /** 目标类名 */
+  targetClass: string;
+  /** 目标方法名 */
+  targetMethod: string;
+  /** 调用类型 */
+  callType: 'service' | 'repository' | 'internal';
+}
+
+/** 方法调用链 */
+export interface MethodCallChain {
+  __type: 'methodCallChain';
+  /** 源类名 */
+  sourceClass: string;
+  /** 源类类型 */
+  sourceClassType: 'appService' | 'service' | 'repository';
+  /** 源方法名 */
+  sourceMethod: string;
+  /** 调用的方法列表 */
+  calls: MethodCall[];
+  /** 源文件路径 */
+  sourceFile?: string;
+}
+
 // ==================== Extension 元数据 ====================
 
 export interface ExtensionMember {
@@ -227,6 +254,8 @@ export interface AnalyzerResult {
   services: ServiceMetadata[];
   /** 扩展列表 */
   extensions: ExtensionMetadata[];
+  /** 方法调用链 */
+  callChains: MethodCallChain[];
   /** 分析时间戳 */
   analyzedAt: string;
   /** 分析的文件数 */

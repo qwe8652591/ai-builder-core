@@ -15,6 +15,7 @@ import { analyzeComponentFile } from './component-analyzer';
 import { analyzeServiceFile } from './service-analyzer';
 import { analyzeExtensionFile } from './extension-analyzer';
 import { analyzeEnumDefinitions } from './enum-analyzer';
+import { analyzeCallChains } from './call-chain-analyzer';
 
 // 导出类型
 export * from './types';
@@ -55,6 +56,7 @@ export async function analyzeProject(projectRoot: string): Promise<AnalyzerResul
     components: [],
     services: [],
     extensions: [],
+    callChains: [],
     analyzedAt: new Date().toISOString(),
     fileCount: 0,
   };
@@ -123,6 +125,11 @@ export async function analyzeProject(projectRoot: string): Promise<AnalyzerResul
       const content = fs.readFileSync(filePath, 'utf-8');
       const services = analyzeServiceFile(filePath, content);
       result.services.push(...services);
+      
+      // 分析方法调用链
+      const callChains = analyzeCallChains(filePath, content);
+      result.callChains.push(...callChains);
+      
       fileCount++;
     } catch (e) {
       console.warn(`[AST Analyzer] 分析失败: ${filePath}`, e);
@@ -156,6 +163,7 @@ export async function analyzeProject(projectRoot: string): Promise<AnalyzerResul
   console.log(`  - Components: ${result.components.length}`);
   console.log(`  - Services: ${result.services.length}`);
   console.log(`  - Extensions: ${result.extensions.length}`);
+  console.log(`  - Call Chains: ${result.callChains.length}`);
   
   return result;
 }
@@ -215,6 +223,7 @@ function createEmptyResult(): AnalyzerResult {
     components: [],
     services: [],
     extensions: [],
+    callChains: [],
     analyzedAt: new Date().toISOString(),
     fileCount: 0,
   };
@@ -306,6 +315,17 @@ export function toRuntimeMetadata(result: AnalyzerResult): Record<string, unknow
       target: extension.target,
       type: extension.type,
       members: extension.members,
+    });
+  }
+  
+  // 转换 Call Chain
+  for (const callChain of result.callChains) {
+    metadata.push({
+      __type: 'methodCallChain',
+      sourceClass: callChain.sourceClass,
+      sourceClassType: callChain.sourceClassType,
+      sourceMethod: callChain.sourceMethod,
+      calls: callChain.calls,
     });
   }
   
