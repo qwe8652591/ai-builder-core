@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/vite-plugin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Vite plugin for ai-builder DSL transformation and AST analysis",
   "type": "module",
   "main": "./dist/index.js",
@@ -34,4 +34,3 @@
     "@types/glob": "^8.1.0"
   }
 }
-

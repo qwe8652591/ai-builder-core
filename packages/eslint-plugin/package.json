@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/eslint-plugin",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "ESLint plugin for AI Builder DSL syntax constraints",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -45,9 +45,3 @@
     "registry": "https://npm.pkg.github.com"
   }
 }
-
-
-
-
-
-

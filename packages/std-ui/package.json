@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/std-ui",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Standard UI component protocol for AI Builder DSL - framework-agnostic component interfaces",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -61,4 +61,3 @@
     "registry": "https://npm.pkg.github.com"
   }
 }
-

@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/dsl-core",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "AI Builder DSL Core - DSL definitions, decorators and virtual DOM runtime",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
