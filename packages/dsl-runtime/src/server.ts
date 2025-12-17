@@ -606,7 +606,7 @@ render(routes, initSqlContent);
         '@qwe8652591/std-ui': resolvePackage('@qwe8652591/std-ui'),
       },
       // 确保运行时依赖不会被重复加载
-      dedupe: ['react', 'react-dom', 'react-router-dom', 'antd', '@ant-design/icons'],
+      dedupe: ['react', 'react-dom', 'react-router-dom', 'antd', '@ant-design/icons', 'dayjs'],
     },
     
     optimizeDeps: {
@@ -629,6 +629,16 @@ render(routes, initSqlContent);
       exclude: ['sql.js'],
       // 只扫描 DSL 目录
       entries: [path.join(config.root, config.srcDir, '**/*.{ts,tsx}')],
+    },
+    
+    // SSR 配置：确保运行时依赖被正确处理
+    ssr: {
+      // 这些包需要被打包而不是 externalized
+      noExternal: [
+        '@qwe8652591/dsl-runtime',
+        '@qwe8652591/std-ui',
+        'dayjs',
+      ],
     },
     
     esbuild: {
