@@ -22,16 +22,26 @@ export interface TableColumn {
   isDate: boolean;
 }
 
+export interface IndexDef {
+  name: string;
+  columns: string[];
+  unique?: boolean;
+}
+
 export interface TableSchema {
   tableName: string;
   columns: TableColumn[];
   createTableSQL: string;
+  /** 创建索引的 SQL 语句数组 */
+  createIndexSQL: string[];
   /** 列定义（用于 SQLite 适配器） */
   columnDefs: Record<string, string>;
   /** JSON 类型的列名 */
   jsonColumns: string[];
   /** 日期类型的列名 */
   dateColumns: string[];
+  /** 索引定义 */
+  indexes: IndexDef[];
 }
 
 // ==================== 类型映射 ====================
@@ -81,7 +91,9 @@ export function generateTableSchema(entityClass: EntityClass<unknown>): TableSch
       target?: () => EntityClass<unknown>;
       embedded?: boolean;
       cascade?: string[];
+      index?: { unique?: boolean; name?: string };
     }>;
+    indexes?: Array<{ name: string; columns: string[]; unique?: boolean }>;
   };
   
   if (!metadata) {
@@ -93,6 +105,7 @@ export function generateTableSchema(entityClass: EntityClass<unknown>): TableSch
   const columnDefs: Record<string, string> = {};
   const jsonColumns: string[] = [];
   const dateColumns: string[] = [];
+  const indexes: IndexDef[] = [];
   
   // 遍历所有字段
   for (const [fieldName, fieldDef] of Object.entries(metadata.fields)) {
@@ -134,19 +147,53 @@ export function generateTableSchema(entityClass: EntityClass<unknown>): TableSch
     if (isDate) {
       dateColumns.push(fieldName);
     }
+    
+    // 收集字段级别的索引
+    if (fieldDef.index) {
+      indexes.push({
+        name: fieldDef.index.name || `idx_${tableName}_${fieldName}`,
+        columns: [fieldName],
+        unique: fieldDef.index.unique,
+      });
+    }
+  }
+  
+  // 收集实体级别的复合索引
+  if (metadata.indexes) {
+    for (const idx of metadata.indexes) {
+      indexes.push({
+        name: idx.name,
+        columns: idx.columns,
+        unique: idx.unique,
+      });
+    }
   }
   
   // 生成 CREATE TABLE SQL
   const createTableSQL = generateCreateTableSQL(tableName, columns);
   
+  // 生成 CREATE INDEX SQL
+  const createIndexSQL = indexes.map(idx => generateCreateIndexSQL(tableName, idx));
+  
   return {
     tableName,
     columns,
     createTableSQL,
+    createIndexSQL,
     columnDefs,
     jsonColumns,
     dateColumns,
+    indexes,
   };
+}
+
+/**
+ * 生成 CREATE INDEX SQL
+ */
+function generateCreateIndexSQL(tableName: string, index: IndexDef): string {
+  const uniqueStr = index.unique ? 'UNIQUE ' : '';
+  const columnsStr = index.columns.join(', ');
+  return `CREATE ${uniqueStr}INDEX IF NOT EXISTS ${index.name} ON ${tableName} (${columnsStr});`;
 }
 
 /**

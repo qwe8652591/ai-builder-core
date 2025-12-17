@@ -148,6 +148,8 @@ export {
   Field,
   EnumValue,
   PrimaryKey,
+  Index,
+  type IndexOptions,
   Relation,
   OneToMany,
   OneToOne,

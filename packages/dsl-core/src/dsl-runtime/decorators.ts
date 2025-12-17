@@ -31,6 +31,7 @@ const COLUMN_METADATA_KEY = Symbol('column');
 const PRIMARY_KEY_METADATA_KEY = Symbol('primaryKey');
 const RELATION_METADATA_KEY = Symbol('relation');
 const ENUM_VALUE_METADATA_KEY = Symbol('enumValue');
+const INDEX_METADATA_KEY = Symbol('index');
 
 // ==================== 类型定义 ====================
 
@@ -102,11 +103,15 @@ export function Entity(tableOrOptions?: string | EntityOptions): ClassDecorator 
     const columns = Reflect.getMetadata(COLUMN_METADATA_KEY, target.prototype) || {};
     const primaryKeys = Reflect.getMetadata(PRIMARY_KEY_METADATA_KEY, target.prototype) || [];
     const relations = Reflect.getMetadata(RELATION_METADATA_KEY, target.prototype) || {};
+    const indexes = Reflect.getMetadata(INDEX_METADATA_KEY, target.prototype) || [];
     
     // 构建字段定义
     const fields: Record<string, unknown> = {};
     
     for (const [propertyKey, columnOptions] of Object.entries(columns) as [string, ColumnOptions][]) {
+      // 检查该字段是否有索引
+      const fieldIndex = indexes.find((idx: { fieldName: string }) => idx.fieldName === propertyKey);
+      
       fields[propertyKey] = {
         type: columnOptions.type,
         label: columnOptions.label,
@@ -114,6 +119,11 @@ export function Entity(tableOrOptions?: string | EntityOptions): ClassDecorator 
         default: columnOptions.default,
         validation: columnOptions.validation,
         primaryKey: primaryKeys.includes(propertyKey),
+        // 索引信息
+        index: fieldIndex ? {
+          unique: fieldIndex.unique,
+          name: fieldIndex.name,
+        } : undefined,
       };
     }
     
@@ -129,12 +139,22 @@ export function Entity(tableOrOptions?: string | EntityOptions): ClassDecorator 
       };
     }
     
+    // 收集复合索引（多列索引）
+    const compositeIndexes = indexes
+      .filter((idx: { columns?: string[] }) => idx.columns && idx.columns.length > 0)
+      .map((idx: { fieldName: string; name?: string; unique?: boolean; columns?: string[] }) => ({
+        name: idx.name || `idx_${target.name.toLowerCase()}_${idx.fieldName}`,
+        columns: [idx.fieldName, ...(idx.columns || [])],
+        unique: idx.unique,
+      }));
+    
     // 构建实体定义
     const entityDefinition = {
       name: target.name,
       table: options.table || target.name.toLowerCase() + 's',
       comment: options.comment,
       fields,
+      indexes: compositeIndexes.length > 0 ? compositeIndexes : undefined,  // 复合索引
       __type: 'entity' as const,
       __class: target,  // 保留类引用
     };
@@ -547,6 +567,50 @@ export function PrimaryKey(): PropertyDecorator {
     const primaryKeys = Reflect.getMetadata(PRIMARY_KEY_METADATA_KEY, target) || [];
     primaryKeys.push(propertyKey as string);
     Reflect.defineMetadata(PRIMARY_KEY_METADATA_KEY, primaryKeys, target);
+  };
+}
+
+/**
+ * 索引配置选项
+ */
+export interface IndexOptions {
+  /** 索引名称（可选，默认自动生成） */
+  name?: string;
+  /** 是否唯一索引 */
+  unique?: boolean;
+  /** 复合索引的其他字段（当需要多列索引时） */
+  columns?: string[];
+}
+
+/**
+ * 索引装饰器
+ * 
+ * @example
+ * ```typescript
+ * @Entity({ table: 'orders' })
+ * class Order {
+ *   @Index()  // 普通索引
+ *   @Column({ type: FieldTypes.STRING })
+ *   orderNo!: string;
+ * 
+ *   @Index({ unique: true })  // 唯一索引
+ *   @Column({ type: FieldTypes.STRING })
+ *   email!: string;
+ * 
+ *   @Index({ name: 'idx_user_date', columns: ['userId', 'createdAt'] })  // 复合索引
+ *   @Column({ type: FieldTypes.STRING })
+ *   userId!: string;
+ * }
+ * ```
+ */
+export function Index(options: IndexOptions = {}): PropertyDecorator {
+  return function (target: Object, propertyKey: string | symbol) {
+    const indexes = Reflect.getMetadata(INDEX_METADATA_KEY, target) || [];
+    indexes.push({
+      fieldName: propertyKey as string,
+      ...options,
+    });
+    Reflect.defineMetadata(INDEX_METADATA_KEY, indexes, target);
   };
 }
 

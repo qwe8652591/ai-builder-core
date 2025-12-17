@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/dsl-runtime",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "DSL Runtime - 解析和运行 DSL 项目",
   "type": "module",
   "main": "./dist/index.js",
