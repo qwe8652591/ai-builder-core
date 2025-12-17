@@ -3,6 +3,14 @@
   "version": "0.2.1",
   "description": "Vite plugin for ai-builder DSL transformation and AST analysis",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qwe8652591/ai-builder-core.git",
+    "directory": "packages/vite-plugin-ai-builder"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
