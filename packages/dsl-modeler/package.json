@@ -1,6 +1,6 @@
 {
   "name": "@qwe8652591/dsl-modeler",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "DSL Modeler - 元数据建模工作台，可独立运行或集成到项目中",
   "type": "module",
   "main": "./dist/index.js",

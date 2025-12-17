@@ -179,9 +179,13 @@ export async function createModelerServer(options: ModelerServerOptions): Promis
   
   const server = await createServer({
     root: modelerRoot,
-    configFile: path.resolve(modelerRoot, 'vite.config.ts'),
+    configFile: false,  // 不使用外部配置文件，避免发布包中找不到
     
     plugins: [
+      // React 插件
+      react({
+        jsxImportSource: 'react',
+      }),
       // API 中间件
       createApiMiddleware(),
       // AI Builder 插件（用于分析目标项目）
@@ -192,8 +196,8 @@ export async function createModelerServer(options: ModelerServerOptions): Promis
           dtos: '**/*.dto.ts',
           enums: '**/*.enum.ts',
           pages: '**/*.page.tsx',
-          services: '**/*.service.ts',
-          extensions: '**/*.extension.ts',
+          services: '**/*.{appservice,service}.ts',
+          extensions: '**/*.ext.ts',
           components: '**/*.component.tsx',
         },
       }),
@@ -212,6 +216,22 @@ export async function createModelerServer(options: ModelerServerOptions): Promis
         },
       },
     ],
+    
+    resolve: {
+      alias: {
+        '@': path.resolve(modelerRoot, 'src'),
+      },
+    },
+    
+    esbuild: {
+      jsxFactory: 'React.createElement',
+      jsxFragment: 'React.Fragment',
+    },
+    
+    optimizeDeps: {
+      include: ['react', 'react-dom', 'antd', '@ant-design/icons'],
+      exclude: ['@qwe8652591/dsl-core', '@qwe8652591/std-ui'],
+    },
     
     server: {
       port,
